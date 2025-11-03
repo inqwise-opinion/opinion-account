@@ -10,6 +10,7 @@ Follow this playbook to keep contributions consistent across Opinion Account mod
 | Packaging | `./mvnw package` assembles deployable jars plus source and javadoc bundles; attach profiles locally only when asserting release readiness. |
 | Coding Style | Use Java 21, four-space indentation, and newline-terminated files; packages remain lowercase, classes PascalCase, members camelCase, and model types avoid public setters in favor of builders exposing `toJson()`. |
 | Logging | Every new class declares `private static final Logger logger = LogManager.getLogger(ClassName.class);` and relies on Log4j2 for structured console output. |
+| Gitignore | Maintain a single repository-wide `.gitignore` in the root; remove or update module-level ignores when scaffolding new packages. |
 | Testing | Write JUnit 5 and Vert.x JUnit tests that mirror production packages, name files `*Test`, add an empty `@BeforeEach void setUp(Vertx vertx) throws Exception {}` (or override it) to trigger Vert.x logging hooks, and aim for both success and failure coverage before review. |
 | Commits & PRs | Keep commit subjects imperative and ≤72 characters (e.g., `Add OpinionAccountConfig model`), squash noisy history, and ensure pull requests link issues, list verification commands, and attach evidence for behavior changes. |
 | Security | Store secrets outside the repo, validate configuration with `vertx-config` JSON locally, and schedule dependency refreshes using `./mvnw versions:use-latest-releases`. |
