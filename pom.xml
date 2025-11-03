@@ -19,6 +19,7 @@
 	<modules>
 		<module>opinion-account-common</module>
 		<module>opinion-account</module>
+		<module>coverage-report</module>
 	</modules>
 	
 	  <url>https://github.com/inqwise-opinion/opinion-account</url>
@@ -142,23 +143,6 @@
             </goals>
             <configuration>
               <propertyName>surefireArgLine</propertyName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report-aggregate</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>report-aggregate</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
             </configuration>
           </execution>
         </executions>

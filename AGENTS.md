@@ -5,7 +5,7 @@ Follow this playbook to keep contributions consistent across Opinion Account mod
 | Topic | Guidance |
 | --- | --- |
 | Project Structure | `opinion-account/` hosts the Vert.x service entry point, while `opinion-account-common/` packages reusable DTOs and helpers; both mirror the Maven `src/main/java` and `src/test/java` layout with generated sources under `src/main/generated`. |
-| Module Scaffolding | Every new module must include `src/test/resources/log4j2-test.xml` containing the shared console configuration (see snippet below) to keep test logging consistent. |
+| Module Scaffolding | Every new module must include `src/test/resources/log4j2-test.xml` containing the shared console configuration (see snippet below) and update `coverage-report/pom.xml` with its source/class paths to keep test logging and coverage consistent. |
 | Build Commands | `./mvnw clean compile` compiles all modules; `./mvnw -pl opinion-account test` runs service tests; swap the module name (e.g., `opinion-account-common`) to scope builds. |
 | Packaging | `./mvnw package` assembles deployable jars plus source and javadoc bundles; attach profiles locally only when asserting release readiness. |
 | Coding Style | Use Java 21, four-space indentation, and newline-terminated files; packages remain lowercase, classes PascalCase, members camelCase, and model types avoid public setters in favor of builders exposing `toJson()`. |
