@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.inqwise.opinion</groupId>
-    <artifactId>opinion-account-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+	<parent>
+		<groupId>com.inqwise.opinion</groupId>
+		<artifactId>opinion-account-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-  <artifactId>coverage-report</artifactId>
-  <packaging>pom</packaging>
-  <name>Opinion Account Coverage Aggregate</name>
+	<artifactId>coverage-report</artifactId>
+	<packaging>pom</packaging>
+	<name>Opinion Account Coverage Aggregate</name>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
-        <executions>
-          <execution>
-            <id>aggregate-report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report-aggregate</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.parent.build.directory}/site/jacoco</outputDirectory>
-              <reports>
-                <xml enabled="true" destFile="${project.parent.build.directory}/site/jacoco/jacoco.xml"/>
-                <csv enabled="false"/>
-                <html enabled="false"/>
-              </reports>
-              <dataFileSets>
-                <dataFileSet>
-                  <directory>${project.parent.basedir}</directory>
-                  <includes>
-                    <include>*/target/jacoco.exec</include>
-                    <include>*/*/target/jacoco.exec</include>
-                  </includes>
-                </dataFileSet>
-              </dataFileSets>
-              <classFileSets>
-                <classFileSet>
-                  <directory>${project.parent.basedir}/opinion-account/target/classes</directory>
-                </classFileSet>
-                <classFileSet>
-                  <directory>${project.parent.basedir}/opinion-account-common/target/classes</directory>
-                </classFileSet>
-              </classFileSets>
-              <sourceFileSets>
-                <sourceFileSet>
-                  <directory>${project.parent.basedir}/opinion-account/src/main/java</directory>
-                </sourceFileSet>
-                <sourceFileSet>
-                  <directory>${project.parent.basedir}/opinion-account-common/src/main/java</directory>
-                </sourceFileSet>
-              </sourceFileSets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>aggregate-report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.build.directory}/site/jacoco</outputDirectory>
+							<reports>
+								<xml enabled="true" destFile="${project.parent.build.directory}/site/jacoco/jacoco.xml"/>
+								<csv enabled="false"/>
+								<html enabled="false"/>
+							</reports>
+							<dataFileSets>
+								<dataFileSet>
+									<directory>${project.parent.basedir}</directory>
+									<includes>
+										<include>*/target/jacoco.exec</include>
+										<include>*/*/target/jacoco.exec</include>
+									</includes>
+								</dataFileSet>
+							</dataFileSets>
+							<classFileSets>
+								<classFileSet>
+									<directory>${project.parent.basedir}/opinion-account/target/classes</directory>
+								</classFileSet>
+								<classFileSet>
+									<directory>${project.parent.basedir}/opinion-account-common/target/classes</directory>
+								</classFileSet>
+							</classFileSets>
+							<sourceFileSets>
+								<sourceFileSet>
+									<directory>${project.parent.basedir}/opinion-account/src/main/java</directory>
+								</sourceFileSet>
+								<sourceFileSet>
+									<directory>${project.parent.basedir}/opinion-account-common/src/main/java</directory>
+								</sourceFileSet>
+							</sourceFileSets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

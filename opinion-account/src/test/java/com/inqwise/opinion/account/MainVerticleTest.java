@@ -12,17 +12,17 @@ import io.vertx.junit5.VertxTestContext;
 
 @ExtendWith(VertxExtension.class)
 class MainVerticleTest {
-  private static final Logger logger = LogManager.getLogger(MainVerticleTest.class);
+	private static final Logger logger = LogManager.getLogger(MainVerticleTest.class);
 	
-  @BeforeEach
-  void setUp(Vertx vertx) throws Exception {
-  }
-  
-  @Test
-  void deploysVerticle(Vertx vertx, VertxTestContext testContext) {
-	  logger.debug("deploysVerticle");
-    vertx
-      .deployVerticle(new MainVerticle())
-      .onComplete(testContext.succeedingThenComplete());
-  }
+	@BeforeEach
+	void setUp(Vertx vertx) throws Exception {
+	}
+	
+	@Test
+	void deploysVerticle(Vertx vertx, VertxTestContext testContext) {
+		logger.debug("deploysVerticle");
+		vertx
+			.deployVerticle(new MainVerticle())
+			.onComplete(testContext.succeedingThenComplete());
+	}
 }

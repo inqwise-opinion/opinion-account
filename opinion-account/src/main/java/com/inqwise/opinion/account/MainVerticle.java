@@ -4,17 +4,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.VerticleBase;
 
-public class MainVerticle extends AbstractVerticle {
+public class MainVerticle extends VerticleBase {
 	private static final Logger logger = LogManager.getLogger(MainVerticle.class);
-	private OpinionAccountConfig config;
 	
 	@Override
-	public void start(Promise<Void> startPromise) throws Exception {
-		logger.info("MainVerticle start");
-		config = new OpinionAccountConfig(config());
-		super.start(startPromise);
+	public Future<?> start() throws Exception {
+		// TODO Auto-generated method stub
+		return super.start();
 	}
-	
 }
