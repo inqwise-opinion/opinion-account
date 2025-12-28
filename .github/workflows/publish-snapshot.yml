@@ -12,7 +12,7 @@ jobs:
   snapshot:
     name: Deploy Snapshot to Sonatype
     runs-on: ubuntu-latest
-    if: github.repository == 'inqwise-opinion/opinion-common'
+    if: github.repository == 'inqwise-opinion/opinion-account'
 
     steps:
       - name: Checkout code
