@@ -4,7 +4,7 @@ image:https://codecov.io/gh/inqwise-opinion/opinion-account/branch/main/graph/ba
 image:https://snyk.io/test/github/inqwise-opinion/opinion-account/badge.svg[Snyk Security, link=https://snyk.io/test/github/inqwise-opinion/opinion-account]
 
 image:https://img.shields.io/maven-central/v/com.inqwise.opinion/opinion-account.svg?label=Maven%20Central[Maven Central, link=https://central.sonatype.com/artifact/com.inqwise.opinion/opinion-account]
-image:https://img.shields.io/badge/dynamic/xml?color=orange&label=Latest%20Snapshot&query=%2F%2Fmetadata%2Fversioning%2Fversions%2Fversion%5Blast()%5D&url=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Finqwise%2Fopinion%2Fopinion-accountopinion-account%2Fmaven-metadata.xml[Latest Snapshot,link=https://central.sonatype.com/repository/maven-snapshots/com/inqwise/opinion/opinion-account]
+image:https://img.shields.io/badge/dynamic/xml?color=orange&label=Latest%20Snapshot&query=%2F%2Fmetadata%2Fversioning%2Fversions%2Fversion%5Blast()%5D&url=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Finqwise%2Fopinion%2Fopinion-account-common%2Fmaven-metadata.xml[Latest Snapshot,link=https://central.sonatype.com/repository/maven-snapshots/com/inqwise/opinion/opinion-account]
 image:https://img.shields.io/badge/dynamic/xml?color=blue&label=Snapshot%20Published&query=%2F%2Fmetadata%2Fversioning%2FlastUpdated&url=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Finqwise%2Fopinion%2Fopinion-account%2Fmaven-metadata.xml[Snapshot Published,link=https://central.sonatype.com/repository/maven-snapshots/com/inqwise/opinion/opinion-account]
 
 image:https://img.shields.io/badge/License-MIT-yellow.svg[License: MIT, link=https://opensource.org/licenses/MIT]

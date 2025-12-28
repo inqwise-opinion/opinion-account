@@ -1,58 +1,84 @@
 package com.inqwise.opinion.account;
 
+import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.Objects;
-
+@DataObject
 public final class OpinionAccountConfig {
+	
+	private final Integer httpPort;
+	private final String httpHost;
 
-	private static final Logger logger = LogManager.getLogger(OpinionAccountConfig.class);
+	private OpinionAccountConfig(Builder builder) {
+		this.httpPort = builder.httpPort;
+		this.httpHost = builder.httpHost;
+	}
 
-	private final JsonObject delegate;
+	public static class Keys {
+		public static final String HTTP_PORT = "http_port";
+		public static final String HTTP_HOST = "http_host";
+	}
+	
+	public static final OpinionAccountConfig DEFAULTS = OpinionAccountConfig.builder().withHttpHost("localhost").withHttpPort(8080).build();
 
 	public OpinionAccountConfig(JsonObject json) {
-		this.delegate = Objects.requireNonNull(json, "json").copy();
+		httpPort = json.getInteger(Keys.HTTP_PORT, DEFAULTS.httpPort());
+		httpHost = json.getString(Keys.HTTP_HOST, DEFAULTS.httpHost());
+	}
+
+	public JsonObject toJson() {
+		var json = new JsonObject();
+		if(null != httpPort) {
+			json.put(Keys.HTTP_PORT, httpPort);
+		}
+		
+		if(null != httpHost) {
+			json.put(Keys.HTTP_HOST, httpHost);
+		}
+		return json;
+	}
+		
+	public int httpPort() {
+		return httpPort;
+	}
+
+	public String httpHost() {
+		
+		return httpHost;
 	}
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public static Builder builder(JsonObject json) {
-		return builder().fromJson(json);
-	}
-
-	public JsonObject toJson() {
-		return delegate.copy();
+	public static Builder builderFrom(OpinionAccountConfig opinionAccountConfig) {
+		return new Builder(opinionAccountConfig);
 	}
 
 	public static final class Builder {
-
-		private static final Logger logger = LogManager.getLogger(Builder.class);
-
-		private final JsonObject data = new JsonObject();
+		private Integer httpPort;
+		private String httpHost;
 
 		private Builder() {
 		}
 
-		public Builder fromJson(JsonObject source) {
-			if (source != null) {
-				data.mergeIn(source.copy(), true);
-			} else {
-				logger.debug("Received null source JsonObject while building OpinionAccountConfig");
-			}
+		private Builder(OpinionAccountConfig opinionAccountConfig) {
+			this.httpPort = opinionAccountConfig.httpPort;
+			this.httpHost = opinionAccountConfig.httpHost;
+		}
+
+		public Builder withHttpPort(Integer httpPort) {
+			this.httpPort = httpPort;
 			return this;
 		}
 
-		public Builder put(String key, Object value) {
-			data.put(key, value);
+		public Builder withHttpHost(String httpHost) {
+			this.httpHost = httpHost;
 			return this;
 		}
 
 		public OpinionAccountConfig build() {
-			return new OpinionAccountConfig(data);
+			return new OpinionAccountConfig(this);
 		}
 	}
 }

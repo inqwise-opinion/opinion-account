@@ -1,0 +1,150 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Opinion Accounts
+  license:
+    name: MIT
+servers:
+  - url: http://accounts.opinion.local/v1
+paths:
+   /accounts:
+      get:
+         summary: List all accounts
+         operationId: listAccounts
+         tags:
+            - accounts
+         responses:
+            '200':
+               description: A paged array of accounts
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Accounts"
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+      post:
+         summary: Create a account
+         operationId: createAccount
+         tags:
+            - accounts
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/CreateAccountRequest"
+         responses:
+            '201':
+               description: Create Account Result with uid
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+  
+   /accounts/{accountUid}:
+      get:
+         summary: Info for a specific account
+         operationId: showAccountById
+         tags:
+           - accounts
+         parameters:
+           - name: accountUid
+             in: path
+             required: true
+             description: The uid of the account to retrieve
+             schema:
+               type: string
+         responses:
+           '200':
+             description: Expected response to a valid request
+             content:
+               application/json:
+                 schema:
+                   $ref: "#/components/schemas/Accounts"
+           default:
+             description: unexpected error
+             content:
+               application/json:
+                 schema:
+                   $ref: "#/components/schemas/Error"
+      
+      put:
+         summary: Modify account
+         operationId: modifyAccountById
+         tags:
+            - accounts
+         responses:
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+      delete:
+         summary: Delete account
+         operationId: deleteAccountById
+         tags:
+            - accounts
+         responses:
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+   /accounts/_search:
+      post:
+         summary: Search accounts
+         operationId: searchAccounts
+         tags:
+            - accounts
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/SearchAccountsRequest"
+         responses:
+            '200':
+             description: Expected response to a valid request
+             content:
+               application/json:
+                 schema:
+                   $ref: "#/components/schemas/Accounts"
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+      
+components:
+   schemas:
+      CreateAccountRequest:
+         description:  CreateAccountRequest
+      SearchAccountsRequest:   
+         description:  SearchAccountsRequest
+      Account:
+         required:
+            - uid
+         properties:
+            id:
+               type: string
+        
+      Accounts:
+         type: array
+         items:
+            $ref: "#/components/schemas/Account"
+      Error:
+         required:
+            - code
+            - details
+         properties:
+            code:
+               type: string
+            message:
+               type: string

@@ -8,4 +8,10 @@ class Module extends OpinionModule {
 	public Module(Vertx vertx) {
 		super(vertx);
 	}
+	
+	@Override
+	protected void configure() {
+		bind(OpinionAccountConfig.class).toInstance(new OpinionAccountConfig(vertx.getOrCreateContext().config()));
+		bind(AccountService.class).to(DefaultAccountService.class);
+	}
 }

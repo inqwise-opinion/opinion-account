@@ -22,7 +22,7 @@
 		<module>coverage-report</module>
 	</modules>
 	
-		<url>https://github.com/inqwise-opinion/opinion-account</url>
+	<url>https://github.com/inqwise-opinion/opinion-account</url>
 
 	<organization>
 		<name>inqwise</name>
@@ -109,6 +109,11 @@
 			<dependency>
 				<groupId>com.inqwise.opinion</groupId>
 				<artifactId>opinion-common</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.inqwise.opinion</groupId>
+				<artifactId>opinion-account-common</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 		</dependencies>

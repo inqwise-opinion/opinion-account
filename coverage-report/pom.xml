@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -27,14 +28,17 @@
 						<id>aggregate-report</id>
 						<phase>test</phase>
 						<goals>
-							<goal>report-aggregate</goal>
+							<goal>report</goal>
 						</goals>
 						<configuration>
 							<outputDirectory>${project.parent.build.directory}/site/jacoco</outputDirectory>
 							<reports>
-								<xml enabled="true" destFile="${project.parent.build.directory}/site/jacoco/jacoco.xml"/>
-								<csv enabled="false"/>
-								<html enabled="false"/>
+								<xml
+                                    enabled="true"
+                                    destFile="${project.parent.build.directory}/site/jacoco/jacoco.xml"
+                                />
+								<csv enabled="false" />
+								<html enabled="false" />
 							</reports>
 							<dataFileSets>
 								<dataFileSet>
@@ -50,7 +54,8 @@
 									<directory>${project.parent.basedir}/opinion-account/target/classes</directory>
 								</classFileSet>
 								<classFileSet>
-									<directory>${project.parent.basedir}/opinion-account-common/target/classes</directory>
+									<directory
+                                    >${project.parent.basedir}/opinion-account-common/target/classes</directory>
 								</classFileSet>
 							</classFileSets>
 							<sourceFileSets>
@@ -58,7 +63,8 @@
 									<directory>${project.parent.basedir}/opinion-account/src/main/java</directory>
 								</sourceFileSet>
 								<sourceFileSet>
-									<directory>${project.parent.basedir}/opinion-account-common/src/main/java</directory>
+									<directory
+                                    >${project.parent.basedir}/opinion-account-common/src/main/java</directory>
 								</sourceFileSet>
 							</sourceFileSets>
 						</configuration>
