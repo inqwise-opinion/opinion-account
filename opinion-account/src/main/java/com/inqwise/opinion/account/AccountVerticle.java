@@ -72,14 +72,13 @@ public class AccountVerticle extends VerticleBase {
 			logger.debug("create account request: {}", request);
 			//TODO: create account logic
 			
-			return
 			accountService.create(request)
-			.compose(res -> {
+			.compose(res -> 
 				context
 	            .response()
 	            .setStatusCode(200)
-	            .end();
-			});
+	            .end()
+			).onFailure(context::fail);
 		});
 		return routerBuilder;
 	}
