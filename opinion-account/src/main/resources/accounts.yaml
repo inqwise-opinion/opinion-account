@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://accounts.opinion.local/v1
 paths:
-   /accounts:
+   /:
       get:
          summary: List all accounts
          operationId: listAccounts
@@ -46,7 +46,7 @@ paths:
                      schema:
                         $ref: "#/components/schemas/Error"
   
-   /accounts/{accountUid}:
+   /{accountUid}:
       get:
          summary: Info for a specific account
          operationId: showAccountById
@@ -97,7 +97,7 @@ paths:
                   application/json:
                      schema:
                         $ref: "#/components/schemas/Error"
-   /accounts/_search:
+   /_search:
       post:
          summary: Search accounts
          operationId: searchAccounts
@@ -121,6 +121,19 @@ paths:
                   application/json:
                      schema:
                         $ref: "#/components/schemas/Error"
+   /status:
+      get:
+         summary: Service status
+         operationId: status
+         tags:
+            - accounts
+         responses:
+            '200':
+             description: Expected response to a valid request
+             content:
+               application/json:
+                  schema:
+                     type: object
       
 components:
    schemas:

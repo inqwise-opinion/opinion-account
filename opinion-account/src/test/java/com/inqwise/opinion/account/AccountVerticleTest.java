@@ -3,12 +3,15 @@ package com.inqwise.opinion.account;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import io.vertx.core.Deployable;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 
@@ -17,14 +20,27 @@ class AccountVerticleTest {
 	private static final Logger logger = LogManager.getLogger(AccountVerticleTest.class);
 	
 	@BeforeEach
-	void setUp(Vertx vertx) throws Exception {
-	}
-	
-	@Test
-	void deploysVerticle(Vertx vertx, VertxTestContext testContext) {
+	@DisplayName("Deploy a verticle")
+	void setUp(Vertx vertx, VertxTestContext testContext) throws Exception {
 		logger.debug("deploysVerticle");
 		vertx
 			.deployVerticle(AccountVerticle.class, new DeploymentOptions())
 			.onComplete(testContext.succeedingThenComplete());
+	}
+	
+	@Test
+	@DisplayName("A http server response test")
+	void http_server_response_check(Vertx vertx, VertxTestContext testContext) {
+		var client = vertx.createHttpClient();
+		client.request(HttpMethod.GET, 8080, "localhost", "/status")
+	      
+	    .compose(req -> req.send()
+	    		.expecting(HttpResponseExpectation.SC_OK)
+	    		.expecting(HttpResponseExpectation.JSON)
+	    		.compose(HttpClientResponse::body))
+	    .onComplete(testContext.succeeding(buffer -> testContext.verify(() -> {
+	    	  var json = buffer.toJsonObject();
+	    	  testContext.completeNow();
+	      })));
 	}
 }

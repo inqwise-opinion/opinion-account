@@ -4,7 +4,7 @@ image:https://codecov.io/gh/inqwise-opinion/opinion-account/branch/main/graph/ba
 image:https://snyk.io/test/github/inqwise-opinion/opinion-account/badge.svg[Snyk Security, link=https://snyk.io/test/github/inqwise-opinion/opinion-account]
 
 image:https://img.shields.io/maven-central/v/com.inqwise.opinion/opinion-account.svg?label=Maven%20Central[Maven Central, link=https://central.sonatype.com/artifact/com.inqwise.opinion/opinion-account]
-image:https://img.shields.io/badge/dynamic/xml?color=orange&label=Latest%20Snapshot&query=%2F%2Fmetadata%2Fversioning%2Fversions%2Fversion%5Blast()%5D&url=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Finqwise%2Fopinion%2Fopinion-account-common%2Fmaven-metadata.xml[Latest Snapshot,link=https://central.sonatype.com/repository/maven-snapshots/com/inqwise/opinion/opinion-account]
+image:https://img.shields.io/badge/dynamic/xml?color=orange&label=Latest%20Snapshot&query=%2F%2Fmetadata%2Fversioning%2Fversions%2Fversion%5Blast()%5D&url=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Finqwise%2Fopinion%2Fopinion-account%2Fmaven-metadata.xml[Latest Snapshot,link=https://central.sonatype.com/repository/maven-snapshots/com/inqwise/opinion/opinion-account]
 image:https://img.shields.io/badge/dynamic/xml?color=blue&label=Snapshot%20Published&query=%2F%2Fmetadata%2Fversioning%2FlastUpdated&url=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Finqwise%2Fopinion%2Fopinion-account%2Fmaven-metadata.xml[Snapshot Published,link=https://central.sonatype.com/repository/maven-snapshots/com/inqwise/opinion/opinion-account]
 
 image:https://img.shields.io/badge/License-MIT-yellow.svg[License: MIT, link=https://opensource.org/licenses/MIT]
@@ -13,23 +13,25 @@ image:https://img.shields.io/badge/vert.x-5-purple.svg[link="https://vertx.io"]
 
 = Opinion Account
 
-Opinion Account packages shared account-domain primitives, event payloads, and
-integration helpers that power the Opinion platform’s account-facing services.
-The repository hosts reusable components so other services can depend on
-consistent models, validation, and infrastructure wiring across the account
-domain.
+Opinion Account hosts the account-facing HTTP API service and the shared
+`opinion-account-common` library that packages account-domain primitives,
+event payloads, and integration helpers used across the Opinion platform.
 
 == Modules
 
-* `account-common` – foundational value objects, DTOs, codecs, and supporting
-  utilities reused by account-centric microservices.
+* `opinion-account-common` – foundational value objects, DTOs, codecs, and
+  supporting utilities reused by account-centric microservices.
+* `opinion-account` – Vert.x based HTTP service exposing the Account API
+  using an OpenAPI contract (`accounts.yaml`).
 
 == Requirements
 
 * Java 21 (Temurin 21 or newer JDK).
-* Maven Wrapper (`./mvnw`) included with this repository.
+* Maven 3.9+ installed locally.
 
 == Add as a Dependency
+
+To use the shared account-domain types:
 
 [source,xml]
 ----
@@ -40,20 +42,32 @@ domain.
 </dependency>
 ----
 
-Replace `${revision}` with the released version you wish to consume.
+To depend on the HTTP Account service client or embed the service, use:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.inqwise.opinion</groupId>
+    <artifactId>opinion-account</artifactId>
+    <version>${revision}</version>
+</dependency>
+----
+
+Replace `${revision}` with the released version you wish to consume
+(or `1.0.0-SNAPSHOT` when consuming snapshots from Sonatype).
 
 == Development
 
 [subs="+quotes"]
 ----
-# Compile sources #
-./mvnw clean compile
+# Build the whole multi-module project #
+./mvnw clean verify
 
-# Run the unit test suite #
-./mvnw clean test
+# Build only the shared common library #
+./mvnw -pl opinion-account-common clean verify
 
-# Produce source and javadoc jars #
-./mvnw clean package source:jar javadoc:jar
+# Build and test the HTTP Account service #
+./mvnw -pl opinion-account clean verify
 ----
 
 == Support
