@@ -3,6 +3,10 @@ package com.inqwise.opinion.account;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Throwables;
+import com.inqwise.errors.ErrorCodes;
+import com.inqwise.errors.ErrorTicket;
+import com.inqwise.errors.Throws;
 import com.inqwise.opinion.common.Uid;
 
 import io.vertx.core.Future;
@@ -16,6 +20,7 @@ import io.vertx.openapi.validation.ValidatedRequest;
  * Builds a Router instance backed by the OpenAPI description and wires handlers.
  */
 public final class AccountOpenApiRouterBuilder {
+		
 	private static final String CREATE_ACCOUNT = "createAccount";
 
 	private static final String ACCOUNTS_YAML = "accounts.yaml";
@@ -112,6 +117,56 @@ public final class AccountOpenApiRouterBuilder {
 	}
 
 	private Router customizeRouter(Router router) {
+		
+		router.route().failureHandler(ctx -> {
+			logger.debug("enter into failure handler");
+			
+			Throwable ex = ctx.failure();
+			ErrorTicket et = null;
+			if(ex instanceof ErrorTicket) {
+				et = (ErrorTicket)ex;
+			} else {
+				et = ErrorTicket.propagate(ex);
+			}
+			
+			ctx.response()
+			.end(et.toJson().toBuffer());
+			//ctx.json(et.toJson());
+			
+		});
+		
+		router.errorHandler(404, routingContext -> {
+			logger.debug("Enter into error handler");
+			var error =	ErrorTicket.builder()
+			.withError(ErrorCodes.NotFound)
+			.withDetails((routingContext.failure() == null) ?
+			        routingContext.failure().getMessage() : "Not Found")
+			.withStatusCode(404)
+			.build();
+			
+			routingContext
+			.response()
+			.setStatusCode(404)
+			.end(error.toJson().toBuffer());
+		});
+		
+		router.errorHandler(400, routingContext -> {
+			var error =	ErrorTicket.builder()
+			.withError(ErrorCodes.ArgumentWrong)
+			.withDetails((routingContext.failure() == null) ?
+			        routingContext.failure().getMessage() : "Validation Exception")
+			.withStatusCode(400)
+			.build();
+			
+			routingContext
+			.response()
+			.setStatusCode(400)
+			.end(error.toJson().toBuffer());
+		});
+				
+		
+		
+		
 		return router;
 	}
 }
