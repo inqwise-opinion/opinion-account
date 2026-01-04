@@ -2,6 +2,8 @@ package com.inqwise.opinion.account;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +18,14 @@ import io.vertx.junit5.VertxExtension;
 
 @ExtendWith(VertxExtension.class)
 class AccountTest {
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH);
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
 	@BeforeEach
 	void setUp(Vertx vertx) throws Exception {
 	}
 
 	@Test
-	void fromJson_populatesAllFields() {
+	void fromJson_populatesAllFieldsFromFormattedStrings() {
 		var createdAt = LocalDateTime.of(2024, 2, 25, 11, 30, 45);
 		var updatedAt = createdAt.plusHours(3);
 		var lastCreditedAt = LocalDate.of(2024, 2, 26);
@@ -32,13 +36,13 @@ class AccountTest {
 			.put(Account.Keys.NAME, "Sample Account")
 			.put(Account.Keys.OWNER_ID, 99L)
 			.put(Account.Keys.TIMEZONE, "UTC")
-			.put(Account.Keys.CREATED_AT, createdAt.toString())
-			.put(Account.Keys.UPDATED_AT, updatedAt.toString())
+			.put(Account.Keys.CREATED_AT, DATE_TIME_FORMATTER.format(createdAt))
+			.put(Account.Keys.UPDATED_AT, DATE_TIME_FORMATTER.format(updatedAt))
 			.put(Account.Keys.STATUS_ID, OpinionEntityStatus.Active.value())
 			.put(Account.Keys.BALANCE, 1200L)
 			.put(Account.Keys.SUPPLY_DAYS_INTERVAL, 7)
 			.put(Account.Keys.NEXT_SUPPLY_SESSION_SCREDIT, 40)
-			.put(Account.Keys.LAST_SESSIONS_CREDITED_AT, lastCreditedAt.toString());
+			.put(Account.Keys.LAST_SESSIONS_CREDITED_AT, DATE_FORMATTER.format(lastCreditedAt));
 		var account = new Account(json);
 
 		Assertions.assertEquals("account-uid", account.getUid());
@@ -57,7 +61,7 @@ class AccountTest {
 	}
 
 	@Test
-	void toJson_includesOnlyInitializedFields() {
+	void toJson_includesOnlyInitializedFieldsWithFormattedStrings() {
 		var createdAt = LocalDateTime.of(2024, 3, 1, 9, 15, 0);
 		var lastCreditedAt = LocalDate.of(2024, 3, 2);
 		var account = Account.builder()
@@ -77,13 +81,24 @@ class AccountTest {
 		Assertions.assertEquals("uid-123", json.getString(Account.Keys.UID));
 		Assertions.assertEquals("Another Account", json.getString(Account.Keys.NAME));
 		Assertions.assertEquals(101L, json.getLong(Account.Keys.OWNER_ID));
-		Assertions.assertEquals(createdAt.toString(), json.getString(Account.Keys.CREATED_AT));
+		Assertions.assertEquals(DATE_TIME_FORMATTER.format(createdAt), json.getString(Account.Keys.CREATED_AT));
 		Assertions.assertEquals(OpinionEntityStatus.Active.value(), json.getInteger(Account.Keys.STATUS_ID));
 		Assertions.assertEquals(4500L, json.getLong(Account.Keys.BALANCE));
 		Assertions.assertEquals(60, json.getInteger(Account.Keys.NEXT_SUPPLY_SESSION_SCREDIT));
-		Assertions.assertEquals(lastCreditedAt.toString(), json.getString(Account.Keys.LAST_SESSIONS_CREDITED_AT));
+		Assertions.assertEquals(DATE_FORMATTER.format(lastCreditedAt), json.getString(Account.Keys.LAST_SESSIONS_CREDITED_AT));
 		Assertions.assertFalse(json.containsKey(Account.Keys.SERVICE_PACKAGE_ID));
 		Assertions.assertFalse(json.containsKey(Account.Keys.TIMEZONE));
+	}
+
+	@Test
+	void fromJson_supportsIsoDateFallbackForCompatibility() {
+		var createdAt = LocalDateTime.of(2024, 5, 10, 6, 5, 1);
+		var json = new JsonObject()
+			.put(Account.Keys.CREATED_AT, createdAt.toString())
+			.put(Account.Keys.LAST_SESSIONS_CREDITED_AT, createdAt.toLocalDate().toString());
+		var account = new Account(json);
+		Assertions.assertEquals(createdAt, account.getCreatedAt());
+		Assertions.assertEquals(createdAt.toLocalDate(), account.getLastSessionsCreditedAt());
 	}
 
 	@Test

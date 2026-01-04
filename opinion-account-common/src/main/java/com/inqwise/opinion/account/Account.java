@@ -2,6 +2,9 @@ package com.inqwise.opinion.account;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Optional;
 
 import com.inqwise.opinion.common.OpinionEntityStatus;
@@ -45,6 +48,8 @@ public class Account {
 	private Integer supplyDaysInterval;
 	private Integer nextSupplySessionsCredit;
 	private LocalDate lastSessionsCreditedAt;
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH);
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
 
 
 	private Account(Builder builder) {
@@ -70,15 +75,15 @@ public class Account {
 		name = json.getString(Keys.NAME);
 		ownerId = json.getLong(Keys.OWNER_ID);
 		timezone = json.getString(Keys.TIMEZONE);
-		createdAt = Optional.ofNullable(json.getString(Keys.CREATED_AT)).map(LocalDateTime::parse).orElse(null);
-		updatedAt = Optional.ofNullable(json.getString(Keys.UPDATED_AT)).map(LocalDateTime::parse).orElse(null);
+		createdAt = Optional.ofNullable(json.getString(Keys.CREATED_AT)).map(Account::parseDateTime).orElse(null);
+		updatedAt = Optional.ofNullable(json.getString(Keys.UPDATED_AT)).map(Account::parseDateTime).orElse(null);
 		status = Optional.ofNullable(json.getInteger(Keys.STATUS_ID)).map(OpinionEntityStatus::valueOf).orElse(null);
 		servicePackageId = json.getInteger(Keys.SERVICE_PACKAGE_ID);
 		
 		balance = json.getLong(Keys.BALANCE);
 		supplyDaysInterval = json.getInteger(Keys.SUPPLY_DAYS_INTERVAL);
 		nextSupplySessionsCredit = json.getInteger(Keys.NEXT_SUPPLY_SESSION_SCREDIT);
-		lastSessionsCreditedAt = Optional.ofNullable(json.getString(Keys.LAST_SESSIONS_CREDITED_AT)).map(LocalDate::parse).orElse(null);
+		lastSessionsCreditedAt = Optional.ofNullable(json.getString(Keys.LAST_SESSIONS_CREDITED_AT)).map(Account::parseDate).orElse(null);
 	}
 	
 	public String getUid() {
@@ -157,11 +162,11 @@ public class Account {
 		}
 		
 		if(null != createdAt) {
-			json.put(Keys.CREATED_AT, createdAt.toString());
+			json.put(Keys.CREATED_AT, formatDateTime(createdAt));
 		}
-		
+
 		if(null != updatedAt) {
-			json.put(Keys.UPDATED_AT, updatedAt.toString());
+			json.put(Keys.UPDATED_AT, formatDateTime(updatedAt));
 		}
 		
 		if(null != status) {
@@ -181,7 +186,7 @@ public class Account {
 		}
 		
 		if (null != lastSessionsCreditedAt) {
-			json.put(Keys.LAST_SESSIONS_CREDITED_AT, lastSessionsCreditedAt.toString());
+			json.put(Keys.LAST_SESSIONS_CREDITED_AT, formatDate(lastSessionsCreditedAt));
 		}
 		
 		return json;
@@ -306,5 +311,29 @@ public class Account {
 				.add("updatedAt", updatedAt).add("status", status).add("balance", balance)
 				.add("supplyDaysInterval", supplyDaysInterval).add("nextSupplySessionsCredit", nextSupplySessionsCredit)
 				.add("lastSessionsCreditedAt", lastSessionsCreditedAt).toString();
+	}
+
+	private static LocalDateTime parseDateTime(String value) {
+		try {
+			return LocalDateTime.parse(value, DATE_TIME_FORMATTER);
+		} catch (DateTimeParseException ex) {
+			return LocalDateTime.parse(value);
+		}
+	}
+
+	private static LocalDate parseDate(String value) {
+		try {
+			return LocalDate.parse(value, DATE_FORMATTER);
+		} catch (DateTimeParseException ex) {
+			return LocalDate.parse(value);
+		}
+	}
+
+	private static String formatDateTime(LocalDateTime value) {
+		return DATE_TIME_FORMATTER.format(value);
+	}
+
+	private static String formatDate(LocalDate value) {
+		return DATE_FORMATTER.format(value);
 	}
 }
