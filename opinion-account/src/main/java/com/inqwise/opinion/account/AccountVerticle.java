@@ -63,7 +63,10 @@ public class AccountVerticle extends VerticleBase {
 		if(null != server) {
 			lastFuture = lastFuture.compose(nil -> server.close());
 		}
-		return lastFuture;
+		return lastFuture.recover(ex->{
+			logger.error("Error on stop", ex);
+			return Future.succeededFuture();
+		});
 	}
 
 	private AccountOpenApiRouterBuilder routerBuilder() {
