@@ -1,17 +1,17 @@
 package com.inqwise.opinion.account;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.base.Throwables;
 import com.inqwise.errors.ErrorCodes;
 import com.inqwise.errors.ErrorTicket;
-import com.inqwise.errors.Throws;
-import com.inqwise.opinion.common.Uid;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.HttpException;
 import io.vertx.ext.web.openapi.router.RouterBuilder;
 import io.vertx.openapi.contract.OpenAPIContract;
 import io.vertx.openapi.validation.ValidatedRequest;
@@ -118,22 +118,6 @@ public final class AccountOpenApiRouterBuilder {
 
 	private Router customizeRouter(Router router) {
 		
-		router.route().failureHandler(ctx -> {
-			logger.debug("enter into failure handler");
-			
-			Throwable ex = ctx.failure();
-			ErrorTicket et = null;
-			if(ex instanceof ErrorTicket) {
-				et = (ErrorTicket)ex;
-			} else {
-				et = ErrorTicket.propagate(ex);
-			}
-			
-			ctx.response()
-			.end(et.toJson().toBuffer());
-			//ctx.json(et.toJson());
-			
-		});
 		
 		router.errorHandler(404, routingContext -> {
 			logger.debug("Enter into error handler");
@@ -164,6 +148,26 @@ public final class AccountOpenApiRouterBuilder {
 			.end(error.toJson().toBuffer());
 		});
 				
+		router.route().failureHandler(ctx -> {
+			logger.debug("enter into failure handler");
+			
+			Throwable ex = ctx.failure();
+			if(ex instanceof HttpException) {
+				ctx.next();
+			} else {
+				ErrorTicket et = null;
+				if(ex instanceof ErrorTicket) {
+					et = (ErrorTicket)ex;
+				} else {
+					et = ErrorTicket.propagate(ex);
+				}
+				
+				ctx.response()
+				.setStatusCode(Objects.requireNonNullElse(et.getStatus(), 500))
+				.end(et.toJson().toBuffer());
+			}
+			
+		});
 		
 		
 		

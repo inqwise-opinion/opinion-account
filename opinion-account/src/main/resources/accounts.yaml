@@ -5,7 +5,7 @@ info:
   license:
     name: MIT
 servers:
-  - url: http://accounts.opinion.local/v1
+  - url: http://localhost:8080
 paths:
    /:
       get:

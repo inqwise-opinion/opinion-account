@@ -1,15 +1,22 @@
 package com.inqwise.opinion.account;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.inqwise.errors.NotFoundException;
 import com.inqwise.errors.Throws;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.sqlclient.Pool;
+import io.vertx.sqlclient.templates.SqlTemplate;
 
 class DefaultAccountService implements AccountService {
 
 	@Inject
 	private DefaultAccountService() {}
+	
+	@Inject
+	private Provider<Pool> pooledClientProvider;
 	
 	@Override
 	public Future<Void> close() {
@@ -25,10 +32,18 @@ class DefaultAccountService implements AccountService {
 	public Future<CreateResult> create(CreateRequest request) {
 		throw Throws.notImplemented("create");
 	}
-
+	
 	@Override
 	public Future<Account> get(AccountIdentity identity) {
-		throw Throws.notImplemented("get");
+		
+		return
+		SqlTemplate.forQuery(pooledClientProvider.get(), "CALL getAccount(#{id})")
+		.mapFrom(Mappers.ACCOUNT_IDENTITY)
+		.mapTo(Mappers.ACCOUNT_ROW)
+		.execute(identity)
+		.map(rs -> {
+			return rs.stream().findFirst().orElseThrow(() -> new NotFoundException("account not found"));
+		});
 	}
 
 	@Override

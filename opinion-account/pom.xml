@@ -38,6 +38,18 @@
 			<artifactId>vertx-web-openapi-router</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-mysql-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-sql-client-templates</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 		</dependency>
@@ -97,6 +109,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<vertx-config-path>app-test.json</vertx-config-path>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 			<plugin>
 	            <groupId>io.reactiverse</groupId>
@@ -104,7 +121,6 @@
 	            <version>2.0.2</version>
 	            <configuration>
 	            	<jvmArgs></jvmArgs>
-	            	
 	            </configuration>
 	            <executions>
 	                <execution>

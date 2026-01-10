@@ -1,0 +1,14 @@
+{
+	"mysql":{
+		"store":{
+			"type": "json",
+			"config":{
+				"port":3306,
+				"host":"localhost",
+				"database":"office",
+				"user":"opinion-app",
+				"password":"opinion-app"
+			}
+		}
+	}
+}
