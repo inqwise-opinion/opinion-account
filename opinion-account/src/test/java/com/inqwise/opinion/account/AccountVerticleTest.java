@@ -2,6 +2,7 @@ package com.inqwise.opinion.account;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,15 +30,28 @@ class AccountVerticleTest {
 			.onComplete(testContext.succeedingThenComplete());
 	}
 	
+	@AfterEach
+	void shutDown() {
+		logger.debug("shutDown");
+	}
+	
 	@Test
 	@DisplayName("A http server response test")
 	void http_server_response_check(Vertx vertx, VertxTestContext testContext) {
 		var client = vertx.createHttpClient();
 		client.request(HttpMethod.GET, 8080, "localhost", "/status")
-		.compose(req -> req.send()
+		.compose(req -> {
+			logger.debug("send request");
+			return req.send()
 				.expecting(HttpResponseExpectation.SC_OK)
 				.expecting(HttpResponseExpectation.JSON)
-				.compose(HttpClientResponse::body))
+				.compose(HttpClientResponse::body)
+				.onComplete(res->{
+					logger.debug("send success");
+				}, ex-> {
+					logger.error("send failed", ex);
+				});
+		})
 		.onComplete(testContext.succeeding(buffer -> testContext.verify(() -> {
 			var json = buffer.toJsonObject();
 			Assertions.assertTrue(json.isEmpty());
