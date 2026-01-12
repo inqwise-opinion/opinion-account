@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpResponseExpectation;
+import io.vertx.core.http.PoolOptions;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 
@@ -24,9 +26,12 @@ class AccountVerticleTest {
 	@BeforeEach
 	@DisplayName("Deploy a verticle")
 	void setUp(Vertx vertx, VertxTestContext testContext) throws Exception {
-		logger.debug("deploysVerticle");
+		logger.debug("deployVerticle");
 		vertx
 			.deployVerticle(AccountVerticle.class, new DeploymentOptions())
+			.onSuccess(res -> {
+				logger.debug("verticle deployed");
+			})
 			.onComplete(testContext.succeedingThenComplete());
 	}
 	
@@ -38,8 +43,10 @@ class AccountVerticleTest {
 	@Test
 	@DisplayName("A http server response test")
 	void http_server_response_check(Vertx vertx, VertxTestContext testContext) {
+		logger.debug("http_server_response_check - start");
 		var client = vertx.createHttpClient();
-		client.request(HttpMethod.GET, 8080, "localhost", "/status")
+		logger.debug("create request");
+		client.request(HttpMethod.GET, 8080, "127.0.0.1", "/status")
 		.compose(req -> {
 			logger.debug("send request");
 			return req.send()
@@ -52,10 +59,11 @@ class AccountVerticleTest {
 					logger.error("send failed", ex);
 				});
 		})
-		.onComplete(testContext.succeeding(buffer -> testContext.verify(() -> {
+		.map(buffer -> {
 			var json = buffer.toJsonObject();
 			Assertions.assertTrue(json.isEmpty());
-			testContext.completeNow();
-	      })));
+			return buffer;
+		})
+		.onComplete(testContext.succeedingThenComplete());
 	}
 }
