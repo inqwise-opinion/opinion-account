@@ -16,6 +16,7 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.http.PoolOptions;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 
@@ -44,25 +45,16 @@ class AccountVerticleTest {
 	@DisplayName("A http server response test")
 	void http_server_response_check(Vertx vertx, VertxTestContext testContext) {
 		logger.debug("http_server_response_check - start");
-		var client = vertx.createHttpClient();
-		logger.debug("create request");
-		client.request(HttpMethod.GET, 8080, "127.0.0.1", "/status")
-		.compose(req -> {
-			logger.debug("send request");
-			return req.send()
-				.expecting(HttpResponseExpectation.SC_OK)
-				.expecting(HttpResponseExpectation.JSON)
-				.compose(HttpClientResponse::body)
-				.onComplete(res->{
-					logger.debug("send success");
-				}, ex-> {
-					logger.error("send failed", ex);
-				});
-		})
-		.map(buffer -> {
-			var json = buffer.toJsonObject();
+		var client = WebClient.create(vertx);
+		client.get(8080, "127.0.0.1", "/status")
+		.send()
+		.expecting(HttpResponseExpectation.SC_OK)
+		.expecting(HttpResponseExpectation.JSON)
+		.map(resp -> {
+			logger.debug("response received");
+			var json = resp.bodyAsJsonObject();
 			Assertions.assertTrue(json.isEmpty());
-			return buffer;
+			return null;
 		})
 		.onComplete(testContext.succeedingThenComplete());
 	}
