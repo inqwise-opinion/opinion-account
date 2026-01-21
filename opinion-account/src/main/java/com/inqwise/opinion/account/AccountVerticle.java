@@ -1,12 +1,14 @@
 package com.inqwise.opinion.account;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.inqwise.opinion.common.RestApiServerOptions;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.core.Future;
@@ -19,11 +21,11 @@ public class AccountVerticle extends VerticleBase {
 	private static final Logger logger = LogManager.getLogger(AccountVerticle.class);
 
 	@Inject
-	private AccountService accountService;
-
-	@Inject
-	private OpinionAccountConfig config;
-
+	private RestApiServerOptions config;
+	
+	@Inject 
+	private AccountOpenApiRouterBuilder routerBuilder;
+	
 	private HttpServer server;
 
 	private ConfigRetriever retriever;
@@ -39,13 +41,13 @@ public class AccountVerticle extends VerticleBase {
 			
 			Guice.createInjector(List.of(new Module(vertx, configJson))).injectMembers(this);
 			
-			return routerBuilder()
+			return routerBuilder
 				.createRouter()
 				.compose(router -> {
 				server = vertx.createHttpServer(
 					new HttpServerOptions()
-						.setPort(config.httpPort())
-						.setHost(config.httpHost())
+						.setPort(Objects.requireNonNullElse(config.getHttpPort(), 8080))
+						.setHost(Objects.requireNonNullElse(config.getHttpHost(), "127.0.0.1"))
 				);
 				return server.requestHandler(router).listen();
 			});
@@ -67,12 +69,5 @@ public class AccountVerticle extends VerticleBase {
 			logger.error("Error on stop", ex);
 			return Future.succeededFuture();
 		});
-	}
-
-	private AccountOpenApiRouterBuilder routerBuilder() {
-		return new AccountOpenApiRouterBuilder(
-			vertx,
-			accountService
-		);
 	}
 }

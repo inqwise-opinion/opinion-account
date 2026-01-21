@@ -1,4 +1,5 @@
 {
+	"print_stacktrace":true,
 	"mysql":{
 		"store":{
 			"type": "json",

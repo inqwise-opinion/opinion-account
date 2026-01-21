@@ -10,15 +10,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpResponseExpectation;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 
 @ExtendWith(VertxExtension.class)
 class AccountVerticleTest {
 	private static final Logger logger = LogManager.getLogger(AccountVerticleTest.class);
+	private WebClient client;
 	
 	@BeforeEach
 	@DisplayName("Deploy a verticle")
@@ -32,14 +32,13 @@ class AccountVerticleTest {
 	@Test
 	@DisplayName("A http server response test")
 	void http_server_response_check(Vertx vertx, VertxTestContext testContext) {
-		var client = vertx.createHttpClient();
-		client.request(HttpMethod.GET, 8080, "localhost", "/status")
-		.compose(req -> req.send()
-				.expecting(HttpResponseExpectation.SC_OK)
-				.expecting(HttpResponseExpectation.JSON)
-				.compose(HttpClientResponse::body))
-		.onComplete(testContext.succeeding(buffer -> testContext.verify(() -> {
-			var json = buffer.toJsonObject();
+		client = WebClient.create(vertx);
+		client.get(8080, "127.0.0.1", "/status")
+		.send()
+		.expecting(HttpResponseExpectation.SC_OK)
+		.expecting(HttpResponseExpectation.JSON)
+		.onComplete(testContext.succeeding(resp -> testContext.verify(() -> {
+			var json = resp.bodyAsJsonObject();
 			Assertions.assertTrue(json.isEmpty());
 			testContext.completeNow();
 	      })));

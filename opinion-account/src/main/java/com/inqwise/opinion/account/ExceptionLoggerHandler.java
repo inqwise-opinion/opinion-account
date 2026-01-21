@@ -1,0 +1,32 @@
+package com.inqwise.opinion.account;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.inqwise.errors.ErrorTicket;
+
+import io.vertx.core.Handler;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.HttpException;
+
+public class ExceptionLoggerHandler implements Handler<RoutingContext> {
+	private static final Logger logger = LogManager.getLogger(ExceptionLoggerHandler.class);
+	private boolean warnErrorTickets;
+	
+	public ExceptionLoggerHandler(boolean warnErrorTickets) {
+		this.warnErrorTickets = warnErrorTickets;
+	}
+	
+	@Override
+	public void handle(RoutingContext context) {
+		// logger
+		Throwable ex = context.failure();
+		var isManagedException = (ex instanceof HttpException || ex instanceof ErrorTicket);
+		if(!isManagedException) {
+			logger.error("Unexpected error occured", ex);
+		} else if(warnErrorTickets) {
+			logger.warn(ex);
+		}
+		context.next();
+	}
+}

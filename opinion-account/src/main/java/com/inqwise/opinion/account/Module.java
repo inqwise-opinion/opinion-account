@@ -1,5 +1,7 @@
 package com.inqwise.opinion.account;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,6 +10,8 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.inqwise.opinion.common.OpinionModule;
+import com.inqwise.opinion.common.RestApiServerOptions;
+import com.inqwise.opinion.common.UidPrefixGenerator;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -34,9 +38,12 @@ class Module extends OpinionModule {
 	
 	@Override
 	protected void configure() {
-		bind(OpinionAccountConfig.class).toInstance(new OpinionAccountConfig(config()));
+		bind(RestApiServerOptions.class).toInstance(new RestApiServerOptions(config()));
 		bind(AccountService.class).to(DefaultAccountService.class);
 		bind(PoolOptions.class).toInstance(new PoolOptions().setMaxSize(5));
+		bind(Vertx.class).toInstance(vertx);
+		Integer uidPrefixSize = Optional.ofNullable(config().getInteger("uid_prefix_size")).orElse(7);
+		bind(UidPrefixGenerator.class).toInstance(UidPrefixGenerator.builder().startsWith("ac").size(uidPrefixSize).build());
 	}
 	
 	@Provides

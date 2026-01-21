@@ -1,0 +1,37 @@
+package com.inqwise.opinion.account;
+
+import java.util.concurrent.CompletionException;
+
+import com.inqwise.errors.ErrorTicket;
+import com.inqwise.errors.StackTraceFocuser;
+import com.inqwise.errors.Throws;
+import com.inqwise.opinion.common.OncePerRoutingContextHandler;
+
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.HttpException;
+
+public class ExceptionNormalizerHandler extends OncePerRoutingContextHandler {
+	
+	private StackTraceFocuser focuser;
+	public ExceptionNormalizerHandler() {
+		focuser = StackTraceFocuser.builder()
+				.addClass("^io\\.vertx\\.sqlclient")
+				.addClass("^io\\.vertx\\.mysqlclient")
+				.build();
+	}
+	
+	@Override
+	public void handleOnce(RoutingContext context) {
+		var ex = context.failure();
+		if(null == ex || ex instanceof HttpException || ex instanceof ErrorTicket) {
+			context.next();
+		}
+		else {
+			ex = Throws.unbox(ex, CompletionException.class);
+			ex = focuser.apply(ex);
+			
+			context.fail(ex);
+			context.next();
+		}
+	}
+}

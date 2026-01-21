@@ -38,14 +38,14 @@ class AccountTest {
 			.put(Account.Keys.TIMEZONE, "UTC")
 			.put(Account.Keys.CREATED_AT, DATE_TIME_FORMATTER.format(createdAt))
 			.put(Account.Keys.UPDATED_AT, DATE_TIME_FORMATTER.format(updatedAt))
-			.put(Account.Keys.STATUS_ID, OpinionEntityStatus.Active.value())
+			.put(Account.Keys.ACTIVE, true)
 			.put(Account.Keys.BALANCE, 1200L)
 			.put(Account.Keys.SUPPLY_DAYS_INTERVAL, 7)
 			.put(Account.Keys.NEXT_SUPPLY_SESSION_SCREDIT, 40)
 			.put(Account.Keys.LAST_SESSIONS_CREDITED_AT, DATE_FORMATTER.format(lastCreditedAt));
 		var account = new Account(json);
 
-		Assertions.assertEquals("account-uid", account.getUid());
+		Assertions.assertEquals("account-uid", account.getUidToken());
 		Assertions.assertEquals(72L, account.getId());
 		Assertions.assertEquals(5, account.getServicePackageId());
 		Assertions.assertEquals("Sample Account", account.getName());
@@ -53,7 +53,7 @@ class AccountTest {
 		Assertions.assertEquals("UTC", account.getTimezone());
 		Assertions.assertEquals(createdAt, account.getCreatedAt());
 		Assertions.assertEquals(updatedAt, account.getUpdatedAt());
-		Assertions.assertEquals(OpinionEntityStatus.Active, account.getStatus());
+		Assertions.assertEquals(true, account.getActive());
 		Assertions.assertEquals(1200L, account.getBalance());
 		Assertions.assertEquals(7, account.getSupplyDaysInterval());
 		Assertions.assertEquals(40, account.getNextSupplySessionsCredit());
@@ -65,12 +65,12 @@ class AccountTest {
 		var createdAt = LocalDateTime.of(2024, 3, 1, 9, 15, 0);
 		var lastCreditedAt = LocalDate.of(2024, 3, 2);
 		var account = Account.builder()
-			.withUid("uid-123")
+			.withUidToken("uid-123")
 			.withId(91L)
 			.withName("Another Account")
 			.withOwnerId(101L)
 			.withCreatedAt(createdAt)
-			.withStatus(OpinionEntityStatus.Active)
+			.withActive(true)
 			.withBalance(4500L)
 			.withNextSupplySessionsCredit(60)
 			.withLastSessionsCreditedAt(lastCreditedAt)
@@ -82,7 +82,7 @@ class AccountTest {
 		Assertions.assertEquals("Another Account", json.getString(Account.Keys.NAME));
 		Assertions.assertEquals(101L, json.getLong(Account.Keys.OWNER_ID));
 		Assertions.assertEquals(DATE_TIME_FORMATTER.format(createdAt), json.getString(Account.Keys.CREATED_AT));
-		Assertions.assertEquals(OpinionEntityStatus.Active.value(), json.getInteger(Account.Keys.STATUS_ID));
+		Assertions.assertEquals(true, json.getBoolean(Account.Keys.ACTIVE));
 		Assertions.assertEquals(4500L, json.getLong(Account.Keys.BALANCE));
 		Assertions.assertEquals(60, json.getInteger(Account.Keys.NEXT_SUPPLY_SESSION_SCREDIT));
 		Assertions.assertEquals(DATE_FORMATTER.format(lastCreditedAt), json.getString(Account.Keys.LAST_SESSIONS_CREDITED_AT));
@@ -107,7 +107,7 @@ class AccountTest {
 		var updatedAt = createdAt.plusDays(2);
 		var lastCreditedAt = LocalDate.of(2024, 4, 3);
 		var original = Account.builder()
-			.withUid("base-uid")
+			.withUidToken("base-uid")
 			.withId(11L)
 			.withServicePackageId(3)
 			.withName("Original")
@@ -115,7 +115,7 @@ class AccountTest {
 			.withTimezone("PST")
 			.withCreatedAt(createdAt)
 			.withUpdatedAt(updatedAt)
-			.withStatus(OpinionEntityStatus.Active)
+			.withActive(true)
 			.withBalance(2500L)
 			.withSupplyDaysInterval(5)
 			.withNextSupplySessionsCredit(30)
@@ -127,14 +127,14 @@ class AccountTest {
 
 		Assertions.assertNotSame(original, copy);
 		Assertions.assertEquals("Updated", copy.getName());
-		Assertions.assertEquals(original.getUid(), copy.getUid());
+		Assertions.assertEquals(original.getUidToken(), copy.getUidToken());
 		Assertions.assertEquals(original.getId(), copy.getId());
 		Assertions.assertEquals(original.getServicePackageId(), copy.getServicePackageId());
 		Assertions.assertEquals(original.getOwnerId(), copy.getOwnerId());
 		Assertions.assertEquals(original.getTimezone(), copy.getTimezone());
 		Assertions.assertEquals(original.getCreatedAt(), copy.getCreatedAt());
 		Assertions.assertEquals(original.getUpdatedAt(), copy.getUpdatedAt());
-		Assertions.assertEquals(original.getStatus(), copy.getStatus());
+		Assertions.assertEquals(original.getActive(), copy.getActive());
 		Assertions.assertEquals(original.getBalance(), copy.getBalance());
 		Assertions.assertEquals(original.getSupplyDaysInterval(), copy.getSupplyDaysInterval());
 		Assertions.assertEquals(original.getNextSupplySessionsCredit(), copy.getNextSupplySessionsCredit());

@@ -47,18 +47,18 @@ paths:
                         $ref: "#/components/schemas/Error"
   
    /{accountUid}:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
       get:
          summary: Info for a specific account
          operationId: showAccountById
          tags:
            - accounts
-         parameters:
-           - name: accountUid
-             in: path
-             required: true
-             description: The uid of the account to retrieve
-             schema:
-               type: string
          responses:
            '200':
              description: Expected response to a valid request
@@ -139,13 +139,57 @@ components:
    schemas:
       CreateAccountRequest:
          description:  CreateAccountRequest
+         required:
+            - user_id
+            - product_id
+         properties:
+            user_id:
+               type: number
+            product_id:
+               type: number
+            name:
+               type: string
+            client_ip:
+               type: string
+            country_id:
+               type: number
+            source_id:
+               type: number
+            service_package_id:
+               type: number
+            bo_user_id:
+               type: number
+            
       SearchAccountsRequest:   
          description:  SearchAccountsRequest
+         required:
+            - user_id
+            - product_id
+         properties:
+            user_id:
+               type: number
+            product_id:
+               type: number
+            include_non_active:
+               type: boolean
+            top:
+               type: number
+            from:
+               description: date-time
+               type: string
+               format: date-time
+            to:
+               description: date-time
+               type: string
+               format: date-time
+            
       Account:
          required:
             - uid
          properties:
-            id:
+            uid:
+               type: string
+            name:
                type: string
         
       Accounts:
@@ -155,9 +199,12 @@ components:
       Error:
          required:
             - code
-            - details
+            - detail
+            - status
          properties:
             code:
                type: string
-            message:
+            detail:
                type: string
+            status:
+               type: number

@@ -14,7 +14,10 @@
 		<Logger name="com.mchange" level="warn" additivity="false">
 			<AppenderRef ref="Console"/>
 		</Logger>
-		<Root level="all">
+		<Logger name="io.vertx" level="warn" additivity="false">
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Root level="debug">
 			<AppenderRef ref="Console"/>
 		</Root>
 	</Loggers>
