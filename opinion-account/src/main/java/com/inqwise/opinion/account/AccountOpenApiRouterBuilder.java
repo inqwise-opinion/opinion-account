@@ -2,6 +2,7 @@ package com.inqwise.opinion.account;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +17,7 @@ import com.inqwise.opinion.common.Uid;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.ext.web.RequestBody;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -67,14 +69,35 @@ public final class AccountOpenApiRouterBuilder {
 		// show
 		routerBuilder.getRoute("showAccountById").addHandler(this::showAccountByUid);
 		
+		// show balance
+		routerBuilder.getRoute("showAccountBalanceById").addHandler(this::showAccountBalanceByUid);
+		
 		// modify
 		routerBuilder.getRoute("modifyAccountById").addHandler(this::modifyAccountByUid);
 		
+		// change balance
+		routerBuilder.getRoute("changeAccountBalance").addHandler(this::changeAccountBalance);
+		
+		// change owner
+		routerBuilder.getRoute("changeAccountOwner").addHandler(this::changeAccountOwner);
+		
+		// attach user
+		routerBuilder.getRoute("attachAccountUser").addHandler(this::attachAccountUser);
+		
+		// detach user
+		routerBuilder.getRoute("detachAccountUser").addHandler(this::detachAccountUser);
+
 		// delete
 		routerBuilder.getRoute("deleteAccountById").addHandler(this::deleteAccountByUid);
 		
 		// search
 		routerBuilder.getRoute("searchAccounts").addHandler(this::searchAccounts);
+		
+		// find by User and Product
+		routerBuilder.getRoute("findAccountsByUserProduct").addHandler(this::findByUserProduct);
+		
+		// find by ServicePackage expire
+		routerBuilder.getRoute("findAccountsByServicePackageExpire").addHandler(this::findByServicePackageExpire);
 		
 		// status
 		routerBuilder.getRoute("status").addHandler(this::getStatus);
@@ -90,7 +113,10 @@ public final class AccountOpenApiRouterBuilder {
 		var body = validatedRequest.getBody();
 		CreateRequest request = new CreateRequest(Objects.requireNonNull(body, "body is mandatory").getJsonObject());
 		accountService.create(request)
-			.compose(res -> context.json(res))
+			.compose(res -> {
+				context.response().setStatusCode(201);
+				return context.json(res.toJson());
+			})
 			.onFailure(context::fail);
 		
 	}
@@ -111,6 +137,30 @@ public final class AccountOpenApiRouterBuilder {
 		
 		accountService.search(request)
 			.compose(res -> context.json(res.toJson()))
+			.onFailure(context::fail);
+	}
+	
+	private void findByServicePackageExpire(RoutingContext context) {
+		logger.debug("findByServicePackageExpiry");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var request = new SearchRequest(validatedRequest.getBody().getJsonObject());
+		
+		accountService.findByServicePackageExpiry(request)
+			.compose(res -> context.json(res.stream().map(Account::toJson)
+					.collect(JsonArray::new, JsonArray::add, JsonArray::addAll)))
+			.onFailure(context::fail);
+	}
+	
+	private void findByUserProduct(RoutingContext context) {
+		logger.debug("findByUserProduct");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var request = new SearchRequest(validatedRequest.getBody().getJsonObject());
+		
+		accountService.findByUserAndProduct(request)
+			.compose(res -> context.json(res.stream().map(Account::toJson)
+					.collect(JsonArray::new, JsonArray::add, JsonArray::addAll)))
 			.onFailure(context::fail);
 	}
 
@@ -146,6 +196,74 @@ public final class AccountOpenApiRouterBuilder {
 			.compose(res -> context.response().setStatusCode(204).end())
 			.onFailure(context::fail);
 	}
+	
+	private void attachAccountUser(RoutingContext context) {
+		logger.debug("attachAccountUser");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
+		var builder = ModifyRequest.builderFrom(request);
+		builder
+		.withId(uid.getId())
+		.withUidPrefix(uid.getPrefix());
+		
+		accountService.attachUser(builder.build())
+			.compose(res -> context.response().setStatusCode(204).end())
+			.onFailure(context::fail);
+	}
+	
+	private void detachAccountUser(RoutingContext context) {
+		logger.debug("detachAccountUser");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
+		var builder = ModifyRequest.builderFrom(request);
+		builder
+		.withId(uid.getId())
+		.withUidPrefix(uid.getPrefix());
+		
+		accountService.detachUser(builder.build())
+			.compose(res -> context.response().setStatusCode(204).end())
+			.onFailure(context::fail);
+	}
+	
+	private void changeAccountOwner(RoutingContext context) {
+		logger.debug("changeAccountOwner");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
+		var builder = ModifyRequest.builderFrom(request);
+		builder
+		.withId(uid.getId())
+		.withUidPrefix(uid.getPrefix());
+		
+		accountService.changeOwner(builder.build())
+			.compose(res -> context.response().setStatusCode(204).end())
+			.onFailure(context::fail);
+	}
+	
+	private void changeAccountBalance(RoutingContext context) {
+		logger.debug("changeAccountBalance");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
+		var builder = ModifyRequest.builderFrom(request);
+		builder
+		.withId(uid.getId())
+		.withUidPrefix(uid.getPrefix());
+		
+		accountService.changeBalance(builder.build())
+			.compose(res -> context.response().setStatusCode(204).end())
+			.onFailure(context::fail);
+	}
 
 	private void showAccountByUid(RoutingContext context) {
 		logger.debug("showAccountByUid");
@@ -160,6 +278,22 @@ public final class AccountOpenApiRouterBuilder {
 		
 		accountService.get(identity)
 			.compose(res -> context.json(res.toJson()))
+			.onFailure(context::fail);
+	}
+	
+	private void showAccountBalanceByUid(RoutingContext context) {
+		logger.debug("showAccountBalanceByUid");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var identity = AccountIdentity.builder()
+				.withUidPrefix(uid.getPrefix())
+				.withId(uid.getId())
+				.build();
+		
+		accountService.getBalance(identity)
+			.compose(res -> context.end(res.toString()))
 			.onFailure(context::fail);
 	}
 

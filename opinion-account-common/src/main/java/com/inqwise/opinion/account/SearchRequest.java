@@ -12,7 +12,7 @@ import io.vertx.core.json.JsonObject;
 import com.google.common.base.MoreObjects;
 
 @DataObject
-public class SearchRequest {
+public class SearchRequest implements AccountUserProductCriteria, ServicePackageExpiryCriteria {
 	
 	private Integer userId;
 	private Integer productId;
@@ -124,6 +124,7 @@ public class SearchRequest {
 		return includeNonActive;
 	}
 	
+	@Override
 	public Integer getProductId() {
 		return productId;
 	}
@@ -135,10 +136,12 @@ public class SearchRequest {
 		return top;
 	}
 	
+	@Override
 	public Integer getUserId() {
 		return userId;
 	}
 	
+	@Override
 	public LocalDateTime getExpiryAt() {
 		return expiryAt;
 	}

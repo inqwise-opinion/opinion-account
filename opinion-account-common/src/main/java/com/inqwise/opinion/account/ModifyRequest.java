@@ -6,7 +6,7 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 @DataObject
-public class ModifyRequest {
+public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeSet, AccountBusinessDetailsChangeSet, AccountUserAssociationChangeSet, AccountOwnerChangeSet, AccountBalanceChangeSet {
 	
 	private String uidPrefix;
 	private Long id;
@@ -15,7 +15,6 @@ public class ModifyRequest {
 	private Long userId;
 	private Long ownerId;
 	private Long productId;
-	private Long accountId;
 	private String businessCompanyName;
 	private String businessFirstName;
 	private String businessLastName;
@@ -48,7 +47,6 @@ public class ModifyRequest {
 		this.userId = builder.userId;
 		this.ownerId = builder.ownerId;
 		this.productId = builder.productId;
-		this.accountId = builder.accountId;
 		this.businessCompanyName = builder.businessCompanyName;
 		this.businessFirstName = builder.businessFirstName;
 		this.businessLastName = builder.businessLastName;
@@ -81,8 +79,7 @@ public class ModifyRequest {
 		public static final String BACKOFFICE_USER_ID = "bo_user_id";
 		public static final String USER_ID = "user_id";
 		public static final String OWNER_ID = "owner_id";
-		public static final String PRODUCT_ID = "product_id";
-		public static final String ACCOUNT_ID = "account_id";
+		public static final String PRODUCT_ID = "product_id";	
 		public static final String BUSINESS_COMPANY_NAME = "business_company_name";
 		public static final String BUSINESS_FIRST_NAME = "business_first_name";
 		public static final String BUSINESS_LAST_NAME = "business_last_name";
@@ -116,7 +113,6 @@ public class ModifyRequest {
 		userId = json.getLong(Keys.USER_ID);
 		ownerId = json.getLong(Keys.OWNER_ID);
 		productId = json.getLong(Keys.PRODUCT_ID);
-		accountId = json.getLong(Keys.ACCOUNT_ID);
 		businessCompanyName = json.getString(Keys.BUSINESS_COMPANY_NAME);
 		businessFirstName = json.getString(Keys.BUSINESS_FIRST_NAME);
 		businessLastName = json.getString(Keys.BUSINESS_LAST_NAME);
@@ -170,10 +166,6 @@ public class ModifyRequest {
 		
 		if(null != productId) {
 			json.put(Keys.PRODUCT_ID, productId);
-		}
-
-		if(null != accountId) {
-			json.put(Keys.ACCOUNT_ID, accountId);
 		}
 
 		if(null != businessCompanyName) {
@@ -286,22 +278,27 @@ public class ModifyRequest {
 		return uidPrefix;
 	}
 	
+	@Override
 	public Long getId() {
 		return id;
 	}
 	
+	@Override
 	public Long getSourceId() {
 		return sourceId;
 	}
 	
+	@Override
 	public Long getBackofficeUserId() {
 		return backofficeUserId;
 	}
 	
+	@Override
 	public Long getUserId() {
 		return userId;
 	}
 	
+	@Override
 	public Long getOwnerId() {
 		return ownerId;
 	}
@@ -310,98 +307,117 @@ public class ModifyRequest {
 		return productId;
 	}
 
-	public Long getAccountId() {
-		return accountId;
-	}
-
+	@Override
 	public String getBusinessCompanyName() {
 		return businessCompanyName;
 	}
 
+	@Override
 	public String getBusinessFirstName() {
 		return businessFirstName;
 	}
 
+	@Override
 	public String getBusinessLastName() {
 		return businessLastName;
 	}
 
+	@Override
 	public String getBusinessAddress1() {
 		return businessAddress1;
 	}
 
+	@Override
 	public String getBusinessAddress2() {
 		return businessAddress2;
 	}
 
+	@Override
 	public String getBusinessCity() {
 		return businessCity;
 	}
 
+	@Override
 	public Integer getBusinessCountryId() {
 		return businessCountryId;
 	}
 
+	@Override
 	public Integer getBusinessStateId() {
 		return businessStateId;
 	}
 
+	@Override
 	public String getBusinessPostalCode() {
 		return businessPostalCode;
 	}
 
+	@Override
 	public String getBusinessPhone1() {
 		return businessPhone1;
 	}
 	
+	@Override
 	public String getComments() {
 		return comments;
 	}
 	
+	@Override
 	public Integer getTimezoneId() {
 		return timezoneId;
 	}
 	
+	@Override
 	public String getAccountName() {
 		return accountName;
 	}
 	
+	@Override
 	public Boolean getIsActive() {
 		return isActive;
 	}
 	
+	@Override
 	public Boolean getIncludeDepositBounds() {
 		return includeDepositBounds;
 	}
 	
+	@Override
 	public Integer getMinDepositAmount() {
 		return minDepositAmount;
 	}
 	
+	@Override
 	public Integer getMaxDepositAmount() {
 		return maxDepositAmount;
 	}
 	
+	@Override
 	public Integer getAmount() {
 		return amount;
 	}
 	
+	@Override
 	public Integer getAccopTypeId() {
 		return accopTypeId;
 	}
 	
+	@Override
 	public String getSourceGuid() {
 		return sourceGuid;
 	}
 	
+	@Override
 	public String getSessionId() {
 		return sessionId;
 	}
 	
+	@Override
 	public String getGeoCountryCode() {
 		return geoCountryCode;
 	}
 	
+	@Override
 	public String getClientIp() {
 		return clientIp;
 	}
@@ -422,7 +438,6 @@ public class ModifyRequest {
 		private Long userId;
 		private Long ownerId;
 		private Long productId;
-		private Long accountId;
 		private String businessCompanyName;
 		private String businessFirstName;
 		private String businessLastName;
@@ -458,7 +473,6 @@ public class ModifyRequest {
 			this.userId = modifyRequest.userId;
 			this.ownerId = modifyRequest.ownerId;
 			this.productId = modifyRequest.productId;
-			this.accountId = modifyRequest.accountId;
 			this.businessCompanyName = modifyRequest.businessCompanyName;
 			this.businessFirstName = modifyRequest.businessFirstName;
 			this.businessLastName = modifyRequest.businessLastName;
@@ -516,11 +530,6 @@ public class ModifyRequest {
 		
 		public Builder withProductId(Long productId) {
 			this.productId = productId;
-			return this;
-		}
-
-		public Builder withAccountId(Long accountId) {
-			this.accountId = accountId;
 			return this;
 		}
 
@@ -649,7 +658,7 @@ public class ModifyRequest {
 		return MoreObjects.toStringHelper(this).add("uidPrefix", uidPrefix).add("id", id)
 				.add("sourceId", sourceId).add("backofficeUserId", backofficeUserId)
 				.add("userId", userId).add("ownerId", ownerId).add("productId", productId)
-				.add("accountId", accountId).add("businessCompanyName", businessCompanyName)
+				.add("businessCompanyName", businessCompanyName)
 				.add("businessFirstName", businessFirstName).add("businessLastName", businessLastName)
 				.add("businessAddress1", businessAddress1).add("businessAddress2", businessAddress2)
 				.add("businessCity", businessCity).add("businessCountryId", businessCountryId)

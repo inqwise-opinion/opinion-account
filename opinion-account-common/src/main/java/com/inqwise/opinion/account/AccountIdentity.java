@@ -10,7 +10,7 @@ import com.google.common.base.MoreObjects;
 import com.inqwise.opinion.common.Uid;
 
 @DataObject
-public class AccountIdentity {
+public class AccountIdentity implements AccountIdentifiable {
 	private String uidPrefix;
 	private Long id;
 	private Long userId;
@@ -49,14 +49,17 @@ public class AccountIdentity {
 		return json;
 	}
 	
+	@Override
 	public String getUidPrefix() {
 		return uidPrefix;
 	}
 	
+	@Override
 	public Long getId() {
 		return id;
 	}
 	
+	@Override
 	public Long getUserId() {
 		return userId;
 	}
@@ -108,6 +111,7 @@ public class AccountIdentity {
 		return MoreObjects.toStringHelper(this).add("uidPrefix", uidPrefix).add("id", id).add("userId", userId).toString();
 	}
 
+	@Override
 	@GenIgnore
 	public synchronized String getUidToken() {
 		return Uid.builder().withId(getId()).withPrefix(getUidPrefix()).build().toUidToken();

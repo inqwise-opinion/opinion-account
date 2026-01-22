@@ -11,7 +11,7 @@ import io.vertx.sqlclient.templates.RowMapper;
 import io.vertx.sqlclient.templates.TupleMapper;
 
 class DaoMappers {
-	public static final TupleMapper<AccountIdentity> IDENTITY_PARAMS = TupleMapper.mapper(identity -> {
+	public static final TupleMapper<AccountIdentifiable> IDENTITY_PARAMS = TupleMapper.mapper(identity -> {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", identity.getId());
 		return parameters;
@@ -78,7 +78,7 @@ class DaoMappers {
 		return builder.build();
 	};
 
-	public static final TupleMapper<SearchRequest> SEARCH_REQUEST = TupleMapper.mapper(request -> { 
+	public static final TupleMapper<SearchRequest> SEARCH_PARAMS = TupleMapper.mapper(request -> { 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_user_id", request.getUserId());
 		parameters.put("p_product_id", request.getProductId());
@@ -114,7 +114,7 @@ class DaoMappers {
 			+ "#{p_account_id})";
 	
 	
-	public static final TupleMapper<ModifyRequest> ATTACH_USER_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountUserAssociationChangeSet> ATTACH_USER_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_source_id", request.getSourceId());
 		parameters.put("p_user_id", request.getUserId());
@@ -133,7 +133,7 @@ class DaoMappers {
 			+ "#{p_user_id},#{p_account_id},#{p_backoffice_user_id}"
 			+ ")";
 	
-	public static final TupleMapper<ModifyRequest> DETACH_USER_REQUEST = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountUserAssociationChangeSet> DETACH_USER_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_source_id", request.getSourceId());
 		parameters.put("p_user_id", request.getUserId());
@@ -149,11 +149,11 @@ class DaoMappers {
 			+ "#{p_backoffice_user_id}"
 			+ ")";
 	
-	public static final TupleMapper<ModifyRequest> CHANGE_OWNER_REQUEST = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountOwnerChangeSet> CHANGE_OWNER_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_source_id", request.getSourceId());
 		parameters.put("p_owner_id", request.getOwnerId());
-		parameters.put("p_account_id", request.getAccountId());
+		parameters.put("p_account_id", request.getId());
 		parameters.put("p_backoffice_user_id", request.getBackofficeUserId());
 		return parameters;
 	});
@@ -164,7 +164,7 @@ class DaoMappers {
 			+ "#{p_source_guid},#{p_session_id},#{p_geo_country_code},#{p_client_ip}"
 			+ ")";
 	
-	public static final TupleMapper<ModifyRequest> CHANGE_BALANCE_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountBalanceChangeSet> CHANGE_BALANCE_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", request.getId());
 		parameters.put("backoffice_user_id", request.getBackofficeUserId());
@@ -183,21 +183,21 @@ class DaoMappers {
 			+ "#{p_user_id}"
 			+ ")";
 	
-	public static final TupleMapper<AccountIdentity> GET_BALANCE_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountIdentifiable> GET_BALANCE_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", request.getId());
 		parameters.put("p_user_id", request.getUserId());
 		return parameters;
 	});
 	
-	public static final String UPDATE_TEMPLATE = "CALL setAccountDetails("
+	public static final String CHANGE_DETAILS_TEMPLATE = "CALL setAccountDetails("
 			+ "#{p_account_id},#{p_comments},"
 			+ "#{p_timezone_id},#{p_account_name},#{p_is_active},"
 			+ "#{p_owner_id},#{p_include_deposit_bounds},"
 			+ "#{p_min_deposit_amount},#{p_max_deposit_amount}"
 			+ ")";
 	
-	public static final TupleMapper<ModifyRequest> UPDATE_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountDetailsChangeSet> CHANGE_DETAILS_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", request.getId());
 		parameters.put("p_comments", request.getComments());
@@ -211,16 +211,16 @@ class DaoMappers {
 		return parameters;
 	});
 	
-	public static final String UPDATE_BUSINESS_DETAILS_TEMPLATE = "CALL setAccountBusinessDetails("
+	public static final String CHANGE_BUSINESS_DETAILS_TEMPLATE = "CALL setAccountBusinessDetails("
 			+ "#{p_account_id},#{p_business_company_name},#{p_business_first_name},"
 			+ "#{p_business_last_name},#{p_business_address1},#{p_business_address2},"
 			+ "#{p_business_city},#{p_business_country_id},#{p_business_state_id},"
 			+ "#{p_business_postal_code},#{p_business_phone1}"
 			+ ");";
 	
-	public static final TupleMapper<ModifyRequest> UPDATE_BUSINESS_DETAILS_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountBusinessDetailsChangeSet> CHANGE_BUSINESS_DETAILS_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("p_account_id", request.getAccountId());
+		parameters.put("p_account_id", request.getId());
 		parameters.put("p_business_company_name", request.getBusinessCompanyName());
 		parameters.put("p_business_first_name", request.getBusinessFirstName());
 		parameters.put("p_business_last_name", request.getBusinessLastName());
@@ -238,7 +238,7 @@ class DaoMappers {
 			+ "#{p_account_id}"
 			+ ");";
 	
-	public static final TupleMapper<AccountIdentity> GET_BUSINESS_DETAILS_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountIdentifiable> GET_BUSINESS_DETAILS_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", request.getId());
 		return parameters;
@@ -249,7 +249,7 @@ class DaoMappers {
 			+ "#{p_product_id}"
 			+ ");";
 	
-	public static final TupleMapper<SearchRequest> GET_BY_USER_AND_PRODUCT_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountUserProductCriteria> GET_BY_USER_AND_PRODUCT_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_user_id", request.getUserId());
 		parameters.put("p_product_id", request.getProductId());
@@ -260,7 +260,7 @@ class DaoMappers {
 			+ "#{p_expiry_date}"
 			+ ");";
 	
-	public static final TupleMapper<SearchRequest> EXPIRED_SERVICE_PACKAGE_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<ServicePackageExpiryCriteria> EXPIRED_SERVICE_PACKAGE_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_expiry_date", request.getExpiryAt());
 		return parameters;

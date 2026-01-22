@@ -1,5 +1,7 @@
 package com.inqwise.opinion.account;
 
+import java.util.List;
+
 import io.vertx.codegen.annotations.ProxyClose;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.core.Future;
@@ -24,4 +26,19 @@ public interface AccountService {
 	Future<Void> delete(AccountIdentity identity);
 	
 	Future<Void> modify(ModifyRequest request);
+	
+	Future<Void> attachUser(ModifyRequest request);
+	
+	Future<Void> detachUser(ModifyRequest request);
+	
+	Future<Void> changeBalance(ModifyRequest request);
+	
+	Future<Void> changeOwner(ModifyRequest request);
+	
+	Future<Integer> getBalance(AccountIdentity identity);
+	
+	Future<List<Account>> findByServicePackageExpiry(SearchRequest request);
+	
+	Future<List<Account>> findByUserAndProduct(SearchRequest request);
+	
 }

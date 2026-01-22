@@ -8,30 +8,13 @@ servers:
   - url: http://localhost:8080
 paths:
    /:
-      get:
-         summary: List all accounts
-         operationId: listAccounts
-         tags:
-            - accounts
-         responses:
-            '200':
-               description: A paged array of accounts
-               content:
-                  application/json:
-                     schema:
-                        $ref: "#/components/schemas/Accounts"
-            default:
-               description: unexpected error
-               content:
-                  application/json:
-                     schema:
-                        $ref: "#/components/schemas/Error"
       post:
          summary: Create a account
          operationId: createAccount
          tags:
             - accounts
          requestBody:
+            required: true
             content:
                application/json:
                   schema:
@@ -39,6 +22,10 @@ paths:
          responses:
             '201':
                description: Create Account Result with uid
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/CreateAccountResult"
             default:
                description: unexpected error
                content:
@@ -65,7 +52,7 @@ paths:
              content:
                application/json:
                  schema:
-                   $ref: "#/components/schemas/Accounts"
+                   $ref: "#/components/schemas/Account"
            default:
              description: unexpected error
              content:
@@ -78,7 +65,15 @@ paths:
          operationId: modifyAccountById
          tags:
             - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/ModifyAccountDetailsRequest"
          responses:
+            '204':
+               description: Account updated
             default:
                description: unexpected error
                content:
@@ -91,6 +86,142 @@ paths:
          tags:
             - accounts
          responses:
+            '204':
+               description: Account deleted
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /{accountUid}/balance:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
+      get:
+         summary: Get account balance
+         operationId: showAccountBalanceById
+         tags:
+            - accounts
+         responses:
+            '200':
+               description: Account balance
+               content:
+                  application/json:
+                     schema:
+                        type: number
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+      post:
+         summary: Change account balance
+         operationId: changeAccountBalance
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/ChangeBalanceRequest"
+         responses:
+            '204':
+               description: Account balance changed
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /{accountUid}/owner:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
+      post:
+         summary: Change account owner
+         operationId: changeAccountOwner
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/ChangeOwnerRequest"
+         responses:
+            '204':
+               description: Account owner changed
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /{accountUid}/users:attach:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
+      post:
+         summary: Attach account user
+         operationId: attachAccountUser
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/AccountUserAssociationRequest"
+         responses:
+            '204':
+               description: Account user attached
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /{accountUid}/users:detach:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
+      post:
+         summary: Detach account user
+         operationId: detachAccountUser
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/AccountUserAssociationRequest"
+         responses:
+            '204':
+               description: Account user detached
             default:
                description: unexpected error
                content:
@@ -104,10 +235,63 @@ paths:
          tags:
             - accounts
          requestBody:
+            required: true
             content:
                application/json:
                   schema:
                      $ref: "#/components/schemas/SearchAccountsRequest"
+         responses:
+            '200':
+             description: Expected response to a valid request
+             content:
+               application/json:
+                 schema:
+                   $ref: "#/components/schemas/SearchResult"
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /_search/by-user-product:
+      post:
+         summary: Find accounts by user and product
+         operationId: findAccountsByUserProduct
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/SearchByUserProductRequest"
+         responses:
+            '200':
+             description: Expected response to a valid request
+             content:
+               application/json:
+                 schema:
+                   $ref: "#/components/schemas/Accounts"
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /_search/by-service-package-expiry:
+      post:
+         summary: Find accounts by service package expiry
+         operationId: findAccountsByServicePackageExpire
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/SearchByServicePackageExpiryRequest"
          responses:
             '200':
              description: Expected response to a valid request
@@ -159,6 +343,16 @@ components:
                type: number
             bo_user_id:
                type: number
+      
+      CreateAccountResult:
+         description: CreateAccountResult
+         required:
+            - uid
+         properties:
+            uid:
+               type: string
+            id:
+               type: number
             
       SearchAccountsRequest:   
          description:  SearchAccountsRequest
@@ -182,6 +376,35 @@ components:
                description: date-time
                type: string
                format: date-time
+            ids:
+               type: array
+               items:
+                  type: number
+            expiry_at:
+               description: date-time
+               type: string
+               format: date-time
+
+      SearchByUserProductRequest:
+         description: SearchByUserProductRequest
+         required:
+            - user_id
+            - product_id
+         properties:
+            user_id:
+               type: number
+            product_id:
+               type: number
+
+      SearchByServicePackageExpiryRequest:
+         description: SearchByServicePackageExpiryRequest
+         required:
+            - expiry_at
+         properties:
+            expiry_at:
+               description: date-time
+               type: string
+               format: date-time
             
       Account:
          required:
@@ -191,11 +414,91 @@ components:
                type: string
             name:
                type: string
+
+      ModifyAccountDetailsRequest:
+         description: ModifyAccountDetailsRequest
+         properties:
+            comments:
+               type: string
+            timezone_id:
+               type: number
+            account_name:
+               type: string
+            is_active:
+               type: boolean
+            owner_id:
+               type: number
+            include_deposit_bounds:
+               type: boolean
+            min_deposit_amount:
+               type: number
+            max_deposit_amount:
+               type: number
+
+      ChangeBalanceRequest:
+         description: ChangeBalanceRequest
+         required:
+            - bo_user_id
+            - amount
+            - accop_type_id
+         properties:
+            bo_user_id:
+               type: number
+            comments:
+               type: string
+            amount:
+               type: number
+            accop_type_id:
+               type: number
+            source_guid:
+               type: string
+            session_id:
+               type: string
+            geo_country_code:
+               type: string
+            client_ip:
+               type: string
+
+      ChangeOwnerRequest:
+         description: ChangeOwnerRequest
+         required:
+            - source_id
+            - owner_id
+            - bo_user_id
+         properties:
+            source_id:
+               type: number
+            owner_id:
+               type: number
+            bo_user_id:
+               type: number
+
+      AccountUserAssociationRequest:
+         description: AccountUserAssociationRequest
+         required:
+            - source_id
+            - user_id
+            - bo_user_id
+         properties:
+            source_id:
+               type: number
+            user_id:
+               type: number
+            bo_user_id:
+               type: number
         
       Accounts:
          type: array
          items:
             $ref: "#/components/schemas/Account"
+      
+      SearchResult:
+         description: SearchResult
+         properties:
+            items:
+               $ref: "#/components/schemas/Accounts"
+            size:
+               type: number
       Error:
          required:
             - code
