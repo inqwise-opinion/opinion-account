@@ -14,6 +14,7 @@ import com.inqwise.errors.ErrorCodes;
 import com.inqwise.errors.ErrorTicket;
 import com.inqwise.errors.ErrorTickets;
 import com.inqwise.errors.NotFoundException;
+import com.inqwise.opinion.common.OpinionEntityStatus;
 import com.inqwise.opinion.common.UidPrefixGenerator;
 
 import io.vertx.core.Future;
@@ -59,10 +60,10 @@ class DefaultAccountService implements AccountService {
 	@Override
 	public Future<Account> get(AccountIdentity identity) {
 		logger.debug("get({})", identity);
-		return getInternal(identity);
+		return getInternal(identity, true);
 	}
 
-	private Future<Account> getInternal(AccountIdentifiable identity) {
+	private Future<Account> getInternal(AccountIdentifiable identity, boolean includeDeleted) {
 		
 		return
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.GET_TEMPLATE)
@@ -70,10 +71,13 @@ class DefaultAccountService implements AccountService {
 		.mapTo(DaoMappers.ACCOUNT_ROW)
 		.execute(identity)
 		.map(rs -> {
-			return rs.stream()
+			var result = rs.stream()
 					.filter(a -> (null == identity.getUidPrefix() || a.getUidToken().equals(identity.getUidToken())))
+					.filter(a -> includeDeleted || null == a.getStatus() || a.getStatus() != OpinionEntityStatus.Deleted)
 					.findAny()
 					.orElseThrow(() -> new NotFoundException("account"));
+			
+			return result;
 		});
 	}
 
@@ -99,7 +103,7 @@ class DefaultAccountService implements AccountService {
 	@Override
 	public Future<Void> delete(AccountIdentity identity) {
 		logger.debug("delete({})", identity);
-		return getInternal(identity).compose(account -> {
+		return getInternal(identity, false).compose(account -> {
 			return 
 			SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.DELETE_TEMPLATE)
 			.mapFrom(DaoMappers.IDENTITY_PARAMS)
@@ -116,7 +120,7 @@ class DefaultAccountService implements AccountService {
 	@Override
 	public Future<Void> modify(ModifyRequest request) {
 		logger.debug("modify({})", request);
-		return getInternal(request).compose(account -> {
+		return getInternal(request, false).compose(account -> {
 			var hasDetailsChanges = Stream.of(
 					request.getComments(), 
 					request.getTimezoneId(), 
@@ -168,25 +172,26 @@ class DefaultAccountService implements AccountService {
 	@Override
 	public Future<Void> attachUser(ModifyRequest request) {
 		logger.debug("attachUser({})", request);
-		return getInternal(request).compose(account -> attachUser((AccountUserAssociationChangeSet)request));
+		return getInternal(request, false).compose(account -> attachUser((AccountUserAssociationChangeSet)request));
 	}
 
 	@Override
 	public Future<Void> detachUser(ModifyRequest request) {
 		logger.debug("detachUser({})", request);
-		return getInternal(request).compose(account -> detachUser((AccountUserAssociationChangeSet)request));
+		return getInternal(request, false).compose(account -> detachUser((AccountUserAssociationChangeSet)request));
 	}
 
 	@Override
 	public Future<Void> changeBalance(ModifyRequest request) {
 		logger.debug("changeBalance({})", request);
-		return getInternal(request).compose(account -> changeBalance((AccountBalanceChangeSet)request));
+		return getInternal(request, false).compose(account -> changeBalance((AccountBalanceChangeSet)request));
 	}
 
 	@Override
 	public Future<Void> changeOwner(ModifyRequest request) {
 		logger.debug("changeOwner({})", request);
-		return getInternal(request).compose(account -> changeOwner((AccountOwnerChangeSet)request));
+		return getInternal(request, false)
+				.compose(account -> changeOwner(account, (AccountOwnerChangeSet)request));
 	}
 
 	@Override
@@ -204,7 +209,7 @@ class DefaultAccountService implements AccountService {
 					}
 					return value == null ? null : Integer.valueOf(value.toString());
 				})
-				.orElse(0));
+				.orElseThrow(() -> new NotFoundException("account")));
 	}
 
 	@Override
@@ -317,8 +322,9 @@ class DefaultAccountService implements AccountService {
 		});
 	}
 
-	private Future<Void> changeOwner(AccountOwnerChangeSet request) {
+	private Future<Void> changeOwner(Account account, AccountOwnerChangeSet request) {
 		logger.debug("changeOwner");
+		
 		ErrorTickets.checkAnyNotNull(List.of(
 				request.getSourceId(),
 				request.getOwnerId(),
@@ -329,12 +335,7 @@ class DefaultAccountService implements AccountService {
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.CHANGE_OWNER_TEMPLATE)
 		.mapFrom(DaoMappers.CHANGE_OWNER_PARAMS)
 		.execute(request)
-		.map(rs -> {
-			if(rs.rowCount() == 0) {
-				throw new Bug("account #{} owner not changed", request.getId());
-			}
-			return (Void)null;
-		});
+		.mapEmpty();
 	}
 
 	private Future<Void> changeBalance(AccountBalanceChangeSet request) {

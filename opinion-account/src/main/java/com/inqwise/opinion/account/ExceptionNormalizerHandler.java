@@ -12,7 +12,7 @@ import io.vertx.ext.web.handler.HttpException;
 
 public class ExceptionNormalizerHandler extends OncePerRoutingContextHandler {
 	
-	private StackTraceFocuser focuser;
+	private final StackTraceFocuser focuser;
 	public ExceptionNormalizerHandler() {
 		focuser = StackTraceFocuser.builder()
 				.addClass("^io\\.vertx\\.sqlclient")

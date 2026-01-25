@@ -2,16 +2,13 @@ package com.inqwise.opinion.account;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.Optional;
 
+import com.google.common.base.MoreObjects;
 import com.inqwise.opinion.common.OpinionEntityStatus;
 
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import com.google.common.base.MoreObjects;
 
 @DataObject
 public class Account {
@@ -21,13 +18,16 @@ public class Account {
 		public static final String ID = "id";
 		
 		public static final String SERVICE_PACKAGE_ID = "service_package_id";
+		public static final String SERVICE_PACKAGE_NAME = "service_package_name";
 		public static final String PRODUCT_ID = "product_id";
 		public static final String NAME = "account_name";
+		public static final String COMMENTS = "comments";
 		public static final String OWNER_ID = "owner_id";
 		public static final String TIMEZONE = "timezone";
 		public static final String CREATED_AT = "created_at";
 		public static final String UPDATED_AT = "updated_at";
 		public static final String ACTIVE = "active";
+		public static final String STATUS_ID = "status_id";
 
 		public static final String BALANCE = "balance";
 		public static final String SUPPLY_DAYS_INTERVAL = "supply_days_interval";
@@ -44,8 +44,10 @@ public class Account {
 	private Long id;
 	private Integer servicePackageId;
 	private LocalDate servicePackageExpiredOn;
+	private String servicePackageName;
 	private Integer productId;
 	private String name;
+	private String comments;
 	private Long ownerId;
 	private String timezone;
 	private LocalDateTime createdAt;
@@ -59,14 +61,17 @@ public class Account {
 	private Integer maxUsers;
 	private Integer minDepositAmount;
 	private Integer maxDepositAmount;
+	private OpinionEntityStatus status;
 
 	private Account(Builder builder) {
 		this.uidToken = builder.uidToken;
 		this.id = builder.id;
 		this.servicePackageId = builder.servicePackageId;
 		this.servicePackageExpiredOn = builder.servicePackageExpiredOn;
+		this.servicePackageName = builder.servicePackageName;
 		this.productId = builder.productId;
 		this.name = builder.name;
+		this.comments = builder.comments;
 		this.ownerId = builder.ownerId;
 		this.timezone = builder.timezone;
 		this.createdAt = builder.createdAt;
@@ -80,18 +85,21 @@ public class Account {
 		this.maxUsers = builder.maxUsers;
 		this.minDepositAmount = builder.minDepositAmount;
 		this.maxDepositAmount = builder.maxDepositAmount;
+		this.status = builder.status;
 	}
 
 	public Account(JsonObject json) {
 		uidToken = json.getString(Keys.UID);
 		id = json.getLong(Keys.ID);
 		name = json.getString(Keys.NAME);
+		comments = json.getString(Keys.COMMENTS);
 		ownerId = json.getLong(Keys.OWNER_ID);
 		timezone = json.getString(Keys.TIMEZONE);
 		createdAt = Optional.ofNullable(json.getString(Keys.CREATED_AT)).map(Formatters::parseDateTime).orElse(null);
 		updatedAt = Optional.ofNullable(json.getString(Keys.UPDATED_AT)).map(Formatters::parseDateTime).orElse(null);
 		active = json.getBoolean(Keys.ACTIVE);
 		servicePackageId = json.getInteger(Keys.SERVICE_PACKAGE_ID);
+		servicePackageName = json.getString(Keys.SERVICE_PACKAGE_NAME);
 		productId = json.getInteger(Keys.PRODUCT_ID);
 		balance = json.getLong(Keys.BALANCE);
 		supplyDaysInterval = json.getInteger(Keys.SUPPLY_DAYS_INTERVAL);
@@ -101,6 +109,7 @@ public class Account {
 		maxUsers = json.getInteger(Keys.MAX_USERS);
 		minDepositAmount = json.getInteger(Keys.MIN_DEPOSIT_AMOUNT);
 		maxDepositAmount = json.getInteger(Keys.MAX_DEPOSIT_AMOUNT);
+		status = Optional.ofNullable(json.getInteger(Keys.STATUS_ID)).map(OpinionEntityStatus::valueOf).orElse(null);
 	}
 	
 	public Integer getMaxDepositAmount() {
@@ -129,6 +138,10 @@ public class Account {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getComments() {
+		return comments;
 	}
 	
 	public Long getOwnerId() {
@@ -179,6 +192,14 @@ public class Account {
 		return servicePackageExpiredOn;
 	}
 	
+	public String getServicePackageName() {
+		return servicePackageName;
+	}
+	
+	public OpinionEntityStatus getStatus() {
+		return status;
+	}
+	
 	public JsonObject toJson() {
 		var json = new JsonObject();
 		
@@ -194,12 +215,20 @@ public class Account {
 			json.put(Keys.NAME, name);
 		}
 		
+		if (null != comments) {
+			json.put(Keys.COMMENTS, comments);
+		}
+		
 		if(null != ownerId) {
 			json.put(Keys.OWNER_ID, ownerId);
 		}
 		
 		if(null != servicePackageId) {
 			json.put(Keys.SERVICE_PACKAGE_ID, servicePackageId);
+		}
+		
+		if(null != servicePackageName) {
+			json.put(Keys.SERVICE_PACKAGE_NAME, servicePackageName);
 		}
 		
 		if(null != productId) {
@@ -254,6 +283,10 @@ public class Account {
 			json.put(Keys.MAX_DEPOSIT_AMOUNT, maxDepositAmount);
 		}
 		
+		if (null != status) {
+			json.put(Keys.STATUS_ID, status.value());
+		}
+		
 		return json;
 	}
 
@@ -270,8 +303,10 @@ public class Account {
 		private Long id;
 		private Integer servicePackageId;
 		private LocalDate servicePackageExpiredOn;
+		private String servicePackageName;
 		private Integer productId;
 		private String name;
+		private String comments;
 		private Long ownerId;
 		private String timezone;
 		private LocalDateTime createdAt;
@@ -285,6 +320,7 @@ public class Account {
 		private Integer maxUsers;
 		private Integer minDepositAmount;
 		private Integer maxDepositAmount;
+		private OpinionEntityStatus status;
 
 		private Builder() {
 		}
@@ -294,8 +330,10 @@ public class Account {
 			this.id = account.id;
 			this.servicePackageId = account.servicePackageId;
 			this.servicePackageExpiredOn = account.servicePackageExpiredOn;
+			this.servicePackageName = account.servicePackageName;
 			this.productId = account.productId;
 			this.name = account.name;
+			this.comments = account.comments;
 			this.ownerId = account.ownerId;
 			this.timezone = account.timezone;
 			this.createdAt = account.createdAt;
@@ -309,6 +347,7 @@ public class Account {
 			this.maxUsers = account.maxUsers;
 			this.minDepositAmount = account.minDepositAmount;
 			this.maxDepositAmount = account.maxDepositAmount;
+			this.status = account.status;
 		}
 
 		public Builder withUidToken(String uidToken) {
@@ -331,6 +370,11 @@ public class Account {
 			return this;
 		}
 
+		public Builder withServicePackageName(String servicePackageName) {
+			this.servicePackageName = servicePackageName;
+			return this;
+		}
+
 		public Builder withProductId(Integer productId) {
 			this.productId = productId;
 			return this;
@@ -338,6 +382,11 @@ public class Account {
 
 		public Builder withName(String name) {
 			this.name = name;
+			return this;
+		}
+
+		public Builder withComments(String comments) {
+			this.comments = comments;
 			return this;
 		}
 
@@ -406,6 +455,11 @@ public class Account {
 			return this;
 		}
 
+		public Builder withStatus(OpinionEntityStatus status) {
+			this.status = status;
+			return this;
+		}
+
 		public Account build() {
 			return new Account(this);
 		}
@@ -413,13 +467,16 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this).add("uid", uidToken).add("id", id).add("servicePackageId", servicePackageId)
-				.add("servicePackageExpiredOn", servicePackageExpiredOn).add("productId", productId).add("name", name)
-				.add("ownerId", ownerId).add("timezone", timezone).add("createdAt", createdAt)
-				.add("updatedAt", updatedAt).add("active", active).add("balance", balance)
+		return MoreObjects.toStringHelper(this).add("uidToken", uidToken).add("id", id)
+				.add("servicePackageId", servicePackageId).add("servicePackageExpiredOn", servicePackageExpiredOn)
+				.add("servicePackageName", servicePackageName).add("productId", productId).add("name", name)
+				.add("comments", comments).add("ownerId", ownerId).add("timezone", timezone)
+				.add("createdAt", createdAt).add("updatedAt", updatedAt).add("active", active).add("balance", balance)
 				.add("supplyDaysInterval", supplyDaysInterval).add("nextSupplySessionsCredit", nextSupplySessionsCredit)
 				.add("lastSessionsCreditedAt", lastSessionsCreditedAt).add("timezoneOffset", timezoneOffset)
 				.add("maxUsers", maxUsers).add("minDepositAmount", minDepositAmount)
-				.add("maxDepositAmount", maxDepositAmount).toString();
+				.add("maxDepositAmount", maxDepositAmount).add("status", status).toString();
 	}
+	
+	
 }

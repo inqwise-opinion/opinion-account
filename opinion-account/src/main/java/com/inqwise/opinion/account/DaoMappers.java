@@ -2,8 +2,10 @@ package com.inqwise.opinion.account;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.inqwise.opinion.common.OpinionEntityStatus;
 import com.inqwise.opinion.common.Uid;
 import com.inqwise.opinion.common.UidPrefixGenerator;
 
@@ -24,13 +26,11 @@ class DaoMappers {
 		.withUidToken(Uid.builder().withId(id).withPrefix(row.getString("uid_prefix")).build().toUidToken())
 		.withProductId(row.getInteger("product_id"))
 		.withOwnerId(row.getLong("owner_id"))
-		//owner_name
-		//sp_name
 		.withName(row.getString("account_name"))
 		.withServicePackageId(row.getInteger("service_package_id"))
 		.withServicePackageExpiredOn(row.getLocalDate("service_package_expiry_date"))
 		.withActive(row.getBoolean("is_active"))
-		//status_id
+		.withStatus(OpinionEntityStatus.optValueOf(row.getInteger("status_id")))
 		.withCreatedAt(row.getLocalDateTime("insert_date"))
 		.withTimezoneOffset(row.getInteger("time_offset"));
 		
@@ -44,6 +44,10 @@ class DaoMappers {
 		
 		if(row.getColumnIndex("max_deposit_amount") > -1) {
 			builder.withMaxDepositAmount(row.getInteger("max_deposit_amount"));
+		}
+		
+		if(row.getColumnIndex("comments")> -1) {
+			builder.withComments(row.getString("comments"));
 		}
 		
 		return builder.build();
