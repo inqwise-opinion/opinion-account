@@ -34,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run tests with coverage
-        run: mvn clean test jacoco:report -B
+        run: mvn clean test jacoco:report -B -U
 
       - name: Verify coverage report exists
         if: matrix.java == 21
