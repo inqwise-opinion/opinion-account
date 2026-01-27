@@ -10,9 +10,15 @@ import com.inqwise.opinion.common.OncePerRoutingContextHandler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.HttpException;
 
+/**
+ * ExceptionNormalizerHandler.
+ */
 public class ExceptionNormalizerHandler extends OncePerRoutingContextHandler {
 	
 	private final StackTraceFocuser focuser;
+	/**
+	 * Constructs ExceptionNormalizerHandler.
+	 */
 	public ExceptionNormalizerHandler() {
 		focuser = StackTraceFocuser.builder()
 				.addClass("^io\\.vertx\\.sqlclient")
@@ -21,6 +27,9 @@ public class ExceptionNormalizerHandler extends OncePerRoutingContextHandler {
 				.build();
 	}
 	
+	/**
+	 * handleOnce.
+	 */
 	@Override
 	public void handleOnce(RoutingContext context) {
 		var ex = context.failure();

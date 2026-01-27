@@ -23,8 +23,14 @@ import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.PoolOptions;
 
+/**
+ * Module.
+ */
 class Module extends OpinionModule {
 
+	/**
+	 * getLogger.
+	 */
 	private static final Logger logger = LogManager.getLogger(Module.class);
 	
 	private static final String STORE_KEY = "store";
@@ -32,10 +38,16 @@ class Module extends OpinionModule {
 	private static final long ONE_MINUTE = 60000l;
 	private static final String SQL_CONNECT_OPTIONS = "SqlConnectOptions";
 
+	/**
+	 * Constructs Module.
+	 */
 	public Module(Vertx vertx, JsonObject config) {
 		super(vertx, config);
 	}
 	
+	/**
+	 * configure.
+	 */
 	@Override
 	protected void configure() {
 		bind(RestApiServerOptions.class).toInstance(new RestApiServerOptions(config()));
@@ -46,6 +58,9 @@ class Module extends OpinionModule {
 		bind(UidPrefixGenerator.class).toInstance(UidPrefixGenerator.builder().startsWith("ac").size(uidPrefixSize).build());
 	}
 	
+	/**
+	 * provideConnectOptionsRetreaver.
+	 */
 	@Provides
 	@Named(SQL_CONNECT_OPTIONS)
 	@Singleton
@@ -67,6 +82,9 @@ class Module extends OpinionModule {
 		return ConfigRetriever.create(vertx, options);
 	}
 	
+	/**
+	 * providePooledClient.
+	 */
 	@Provides
 	@Singleton
 	private Pool providePooledClient(@Named(SQL_CONNECT_OPTIONS) ConfigRetriever configRetriever, PoolOptions poolOptions) {

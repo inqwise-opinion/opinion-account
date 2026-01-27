@@ -44,6 +44,11 @@ Additional conventions for agents are listed below. Architecture and dataflow li
 - Log entry for each public method.
 - Use `getInternal(identity, includeDeleted)` for account existence checks.
 
+## Javadoc
+
+- Keep Javadoc up to date for public classes and methods; add brief summaries for non-obvious helpers.
+- Update Javadoc when signatures or behavior changes.
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">

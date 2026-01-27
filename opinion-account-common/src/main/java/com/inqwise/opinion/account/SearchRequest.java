@@ -11,6 +11,9 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import com.google.common.base.MoreObjects;
 
+/**
+ * SearchRequest.
+ */
 @DataObject
 public class SearchRequest implements AccountUserProductCriteria, ServicePackageExpiryCriteria {
 	
@@ -23,6 +26,9 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 	private LocalDateTime expiryAt;
 	private List<Long> ids;
 
+	/**
+	 * Constructs SearchRequest.
+	 */
 	private SearchRequest(Builder builder) {
 		this.userId = builder.userId;
 		this.productId = builder.productId;
@@ -45,6 +51,9 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 		public static final String EXPIRY_AT = "expiry_at";
 	}
 
+	/**
+	 * Constructs SearchRequest.
+	 */
 	public SearchRequest(JsonObject json) {
 		userId = json.getInteger(Keys.USER_ID);
 		productId = json.getInteger(Keys.PRODUCT_ID);
@@ -62,6 +71,9 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 		expiryAt = Optional.ofNullable(json.getString(Keys.EXPIRY_AT)).map(Formatters::parseDateTime).orElse(null);
 	}
 
+	/**
+	 * toJson.
+	 */
 	public JsonObject toJson() {
 		var json = new JsonObject();
 		
@@ -100,6 +112,9 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 		return json;
 	}
 
+	/**
+	 * toLong.
+	 */
 	private static Long toLong(Object value) {
 		if(value instanceof Number number) {
 			return number.longValue();
@@ -112,44 +127,74 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 		return null;
 	}
 
+	/**
+	 * getFrom.
+	 */
 	public LocalDateTime getFrom() {
 		return from;
 	}
 	
+	/**
+	 * getIds.
+	 */
 	public List<Long> getIds() {
 		return ids;
 	}
 	
+	/**
+	 * getIncludeNonActive.
+	 */
 	public Boolean getIncludeNonActive() {
 		return includeNonActive;
 	}
 	
+	/**
+	 * getProductId.
+	 */
 	@Override
 	public Integer getProductId() {
 		return productId;
 	}
 	
+	/**
+	 * getTo.
+	 */
 	public LocalDateTime getTo() {
 		return to;
 	}
+	/**
+	 * getSize.
+	 */
 	public Integer getSize() {
 		return top;
 	}
 	
+	/**
+	 * getUserId.
+	 */
 	@Override
 	public Integer getUserId() {
 		return userId;
 	}
 	
+	/**
+	 * getExpiryAt.
+	 */
 	@Override
 	public LocalDateTime getExpiryAt() {
 		return expiryAt;
 	}
 
+	/**
+	 * builder.
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	/**
+	 * builderFrom.
+	 */
 	public static Builder builderFrom(SearchRequest searchRequest) {
 		return new Builder(searchRequest);
 	}
@@ -162,11 +207,20 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 		private LocalDateTime from;
 		private LocalDateTime to;
 		private LocalDateTime expiryAt;
+		/**
+		 * emptyList.
+		 */
 		private List<Long> ids = Collections.emptyList();
 
+		/**
+		 * Builder.
+		 */
 		private Builder() {
 		}
 
+		/**
+		 * Builder.
+		 */
 		private Builder(SearchRequest searchRequest) {
 			this.userId = searchRequest.userId;
 			this.productId = searchRequest.productId;
@@ -178,51 +232,81 @@ public class SearchRequest implements AccountUserProductCriteria, ServicePackage
 			this.ids = searchRequest.ids;
 		}
 
+		/**
+		 * withUserId.
+		 */
 		public Builder withUserId(Integer userId) {
 			this.userId = userId;
 			return this;
 		}
 
+		/**
+		 * withProductId.
+		 */
 		public Builder withProductId(Integer productId) {
 			this.productId = productId;
 			return this;
 		}
 
+		/**
+		 * withIncludeNonActive.
+		 */
 		public Builder withIncludeNonActive(Boolean includeNonActive) {
 			this.includeNonActive = includeNonActive;
 			return this;
 		}
 
+		/**
+		 * withTop.
+		 */
 		public Builder withTop(Integer top) {
 			this.top = top;
 			return this;
 		}
 
+		/**
+		 * withFrom.
+		 */
 		public Builder withFrom(LocalDateTime from) {
 			this.from = from;
 			return this;
 		}
 
+		/**
+		 * withTo.
+		 */
 		public Builder withTo(LocalDateTime to) {
 			this.to = to;
 			return this;
 		}
 
+		/**
+		 * withExpiryAt.
+		 */
 		public Builder withExpiryAt(LocalDateTime expiryAt) {
 			this.expiryAt = expiryAt;
 			return this;
 		}
 
+		/**
+		 * withIds.
+		 */
 		public Builder withIds(List<Long> ids) {
 			this.ids = ids;
 			return this;
 		}
 
+		/**
+		 * build.
+		 */
 		public SearchRequest build() {
 			return new SearchRequest(this);
 		}
 	}
 
+	/**
+	 * toString.
+	 */
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("userId", userId).add("productId", productId)

@@ -9,14 +9,26 @@ import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.HttpException;
 
+/**
+ * ExceptionLoggerHandler.
+ */
 public class ExceptionLoggerHandler implements Handler<RoutingContext> {
+	/**
+	 * getLogger.
+	 */
 	private static final Logger logger = LogManager.getLogger(ExceptionLoggerHandler.class);
 	private boolean warnErrorTickets;
 	
+	/**
+	 * Constructs ExceptionLoggerHandler.
+	 */
 	public ExceptionLoggerHandler(boolean warnErrorTickets) {
 		this.warnErrorTickets = warnErrorTickets;
 	}
 	
+	/**
+	 * handle.
+	 */
 	@Override
 	public void handle(RoutingContext context) {
 		// logger

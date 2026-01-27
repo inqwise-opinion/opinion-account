@@ -23,7 +23,13 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.templates.SqlTemplate;
 
+/**
+ * DefaultAccountService.
+ */
 class DefaultAccountService implements AccountService {
+	/**
+	 * getLogger.
+	 */
 	private static final Logger logger = LogManager.getLogger(DefaultAccountService.class);
 	
 	@Inject
@@ -35,16 +41,25 @@ class DefaultAccountService implements AccountService {
 	@Inject
 	private Provider<Pool> pooledClientProvider;
 	
+	/**
+	 * close.
+	 */
 	@Override
 	public Future<Void> close() {
 		return Future.succeededFuture();
 	}
 
+	/**
+	 * status.
+	 */
 	@Override
 	public Future<JsonObject> status() {
 		return Future.succeededFuture(new JsonObject());
 	}
 
+	/**
+	 * create.
+	 */
 	@Override
 	public Future<CreateResult> create(CreateRequest request) {
 		logger.debug("create({})", request);
@@ -58,12 +73,18 @@ class DefaultAccountService implements AccountService {
 		});
 	}
 	
+	/**
+	 * get.
+	 */
 	@Override
 	public Future<Account> get(AccountIdentity identity) {
 		logger.debug("get({})", identity);
 		return getInternal(identity, true);
 	}
 
+	/**
+	 * getInternal.
+	 */
 	private Future<Account> getInternal(AccountIdentifiable identity, boolean includeDeleted) {
 		
 		return
@@ -82,6 +103,9 @@ class DefaultAccountService implements AccountService {
 		});
 	}
 
+	/**
+	 * search.
+	 */
 	@Override
 	public Future<SearchResult> search(SearchRequest request) {
 		logger.debug("search({})", request);
@@ -101,6 +125,9 @@ class DefaultAccountService implements AccountService {
 		});
 	}
 
+	/**
+	 * delete.
+	 */
 	@Override
 	public Future<Void> delete(AccountIdentity identity) {
 		logger.debug("delete({})", identity);
@@ -118,6 +145,9 @@ class DefaultAccountService implements AccountService {
 		});
 	}
 
+	/**
+	 * modify.
+	 */
 	@Override
 	public Future<Void> modify(ModifyRequest request) {
 		logger.debug("modify({})", request);
@@ -170,24 +200,36 @@ class DefaultAccountService implements AccountService {
 		});
 	}
 
+	/**
+	 * attachUser.
+	 */
 	@Override
 	public Future<Void> attachUser(ModifyRequest request) {
 		logger.debug("attachUser({})", request);
 		return getInternal(request, false).compose(account -> attachUser((AccountUserAssociationChangeSet)request));
 	}
 
+	/**
+	 * detachUser.
+	 */
 	@Override
 	public Future<Void> detachUser(ModifyRequest request) {
 		logger.debug("detachUser({})", request);
 		return getInternal(request, false).compose(account -> detachUser((AccountUserAssociationChangeSet)request));
 	}
 
+	/**
+	 * changeBalance.
+	 */
 	@Override
 	public Future<Void> changeBalance(ModifyRequest request) {
 		logger.debug("changeBalance({})", request);
 		return getInternal(request, false).compose(account -> changeBalance((AccountBalanceChangeSet)request));
 	}
 
+	/**
+	 * changeOwner.
+	 */
 	@Override
 	public Future<Void> changeOwner(ModifyRequest request) {
 		logger.debug("changeOwner({})", request);
@@ -195,6 +237,9 @@ class DefaultAccountService implements AccountService {
 				.compose(account -> changeOwner(account, (AccountOwnerChangeSet)request));
 	}
 	
+	/**
+	 * changeServicePackage.
+	 */
 	@Override
 	public Future<Void> changeServicePackage(ModifyRequest request) {
 		logger.debug("changeServicePackage({})", request);
@@ -213,6 +258,9 @@ class DefaultAccountService implements AccountService {
 				.compose(account -> changeServicePackage(account, (AccountServicePackageChangeSet)builder.build()));
 	}
 	
+	/**
+	 * getBusinessDetails.
+	 */
 	@Override
 	public Future<AccountBusinessDetails> getBusinessDetails(AccountIdentity identity) {
 		logger.debug("getBusinessDetails({})", identity);
@@ -226,6 +274,9 @@ class DefaultAccountService implements AccountService {
 		);
 	}
 
+	/**
+	 * getBalance.
+	 */
 	@Override
 	public Future<Integer> getBalance(AccountIdentity identity) {
 		logger.debug("getBalance({})", identity);
@@ -244,6 +295,9 @@ class DefaultAccountService implements AccountService {
 				.orElseThrow(() -> new NotFoundException("account")));
 	}
 
+	/**
+	 * findByServicePackageExpiry.
+	 */
 	@Override
 	public Future<List<Account>> findByServicePackageExpiry(SearchRequest request) {
 		logger.debug("findByServicePackageExpiry({})", request);
@@ -254,6 +308,9 @@ class DefaultAccountService implements AccountService {
 			.map(rs -> rs.stream().toList());
 	}
 
+	/**
+	 * findByUserAndProduct.
+	 */
 	@Override
 	public Future<List<Account>> findByUserAndProduct(SearchRequest request) {
 		logger.debug("findByUserAndProduct({})", request);
@@ -264,6 +321,9 @@ class DefaultAccountService implements AccountService {
 			.map(rs -> rs.stream().toList());
 	}
 
+	/**
+	 * modifyDetails.
+	 */
 	private Future<Void> modifyDetails(AccountDetailsChangeSet request) {
 		logger.debug("modifyDetails");
 		ErrorTickets.checkAnyNotNull(Arrays.asList(
@@ -282,6 +342,9 @@ class DefaultAccountService implements AccountService {
 		.mapEmpty();
 	}
 
+	/**
+	 * modifyBusinessDetails.
+	 */
 	private Future<Void> modifyBusinessDetails(AccountBusinessDetailsChangeSet request) {
 		logger.debug("modifyBusinessDetails");
 		ErrorTickets.checkAnyNotNull(Arrays.asList(
@@ -303,6 +366,9 @@ class DefaultAccountService implements AccountService {
 		.mapEmpty();
 	}
 
+	/**
+	 * attachUser.
+	 */
 	private Future<Void> attachUser(AccountUserAssociationChangeSet request) {
 		logger.debug("attachUser");
 		ErrorTickets.checkAnyNotNull(Arrays.asList(
@@ -318,6 +384,9 @@ class DefaultAccountService implements AccountService {
 		.mapEmpty();
 	}
 
+	/**
+	 * detachUser.
+	 */
 	private Future<Void> detachUser(AccountUserAssociationChangeSet request) {
 		logger.debug("detachUser");
 		ErrorTickets.checkAnyNotNull(Arrays.asList(
@@ -333,6 +402,9 @@ class DefaultAccountService implements AccountService {
 		.mapEmpty();
 	}
 
+	/**
+	 * changeOwner.
+	 */
 	private Future<Void> changeOwner(Account account, AccountOwnerChangeSet request) {
 		logger.debug("changeOwner");
 		
@@ -349,6 +421,9 @@ class DefaultAccountService implements AccountService {
 		.mapEmpty();
 	}
 	
+	/**
+	 * changeServicePackage.
+	 */
 	private Future<Void> changeServicePackage(Account account, AccountServicePackageChangeSet request) {
 		logger.debug("changeServicePackage");
 		ErrorTickets.checkAnyNotNull(Arrays.asList(
@@ -364,6 +439,9 @@ class DefaultAccountService implements AccountService {
 		.mapEmpty();
 	}
 
+	/**
+	 * changeBalance.
+	 */
 	private Future<Void> changeBalance(AccountBalanceChangeSet request) {
 		logger.debug("changeBalance");
 		ErrorTickets.checkAnyNotNull(Arrays.asList(

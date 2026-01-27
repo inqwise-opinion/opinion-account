@@ -3,6 +3,9 @@ package com.inqwise.opinion.account;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * CreateRequest.
+ */
 @DataObject
 public class CreateRequest {
 	
@@ -26,6 +29,9 @@ public class CreateRequest {
 		public static final String BACKOFFICE_USER_ID = "bo_user_id";
 	}
 
+	/**
+	 * Constructs CreateRequest.
+	 */
 	public CreateRequest(JsonObject json) {
 		clientIp = json.getString(Keys.CLIENT_IP);
 		countryId = json.getInteger(Keys.COUNTRY_ID);
@@ -37,6 +43,9 @@ public class CreateRequest {
 		backofficeUserId = json.getLong(Keys.BACKOFFICE_USER_ID);
 	}
 
+	/**
+	 * toJson.
+	 */
 	public JsonObject toJson() {
 		var json = new JsonObject();
 		if(null != clientIp) {
@@ -74,34 +83,58 @@ public class CreateRequest {
 		return json;
 	}
 
+	/**
+	 * getClientIp.
+	 */
 	public String getClientIp() {
 		return clientIp;
 	}
 
+	/**
+	 * getCountryId.
+	 */
 	public Integer getCountryId() {
 		return countryId;
 	}
 
+	/**
+	 * getName.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * getSourceId.
+	 */
 	public Integer getSourceId() {
 		return sourceId;
 	}
 
+	/**
+	 * getProductId.
+	 */
 	public Integer getProductId() {
 		return productId;
 	}
 
+	/**
+	 * getServicePackageId.
+	 */
 	public Integer getServicePackageId() {
 		return servicePackageId;
 	}
 
+	/**
+	 * getUserId.
+	 */
 	public Long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * getBackofficeUserId.
+	 */
 	public Long getBackofficeUserId() {
 		return backofficeUserId;
 	}

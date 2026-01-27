@@ -1,5 +1,8 @@
 package com.inqwise.opinion.account;
 
+/**
+ * AccountBusinessDetailsChangeSet.
+ */
 public interface AccountBusinessDetailsChangeSet {
 	Long getId();
 	String getBusinessCompanyName();

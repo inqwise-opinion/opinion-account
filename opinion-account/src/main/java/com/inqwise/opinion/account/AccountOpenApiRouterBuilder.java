@@ -30,12 +30,18 @@ import io.vertx.openapi.validation.ValidatedRequest;
 /**
  * Builds a Router instance backed by the OpenAPI description and wires handlers.
  */
+/**
+ * AccountOpenApiRouterBuilder.
+ */
 public final class AccountOpenApiRouterBuilder {
 		
 	private static final String CREATE_ACCOUNT = "createAccount";
 
 	private static final String ACCOUNTS_YAML = "accounts.yaml";
 
+	/**
+	 * getLogger.
+	 */
 	private static final Logger logger = LogManager.getLogger(AccountOpenApiRouterBuilder.class);
 
 	@Inject
@@ -46,10 +52,16 @@ public final class AccountOpenApiRouterBuilder {
 	private RestApiServerOptions options;
 	
 
+	/**
+	 * Constructs AccountOpenApiRouterBuilder.
+	 */
 	@Inject
 	private AccountOpenApiRouterBuilder() {	
 	}
 
+	/**
+	 * createRouter.
+	 */
 	public Future<Router> createRouter() {
 		return getContract()
 			.map(contract -> RouterBuilder.create(vertx, contract))
@@ -58,10 +70,16 @@ public final class AccountOpenApiRouterBuilder {
 			.map(this::customizeRouter);
 	}
 
+	/**
+	 * getContract.
+	 */
 	private Future<OpenAPIContract> getContract() {
 		return OpenAPIContract.from(vertx, ACCOUNTS_YAML);
 	}
 
+	/**
+	 * registerHandlers.
+	 */
 	private RouterBuilder registerHandlers(RouterBuilder routerBuilder) {
 
 		// create
@@ -112,6 +130,9 @@ public final class AccountOpenApiRouterBuilder {
 		return routerBuilder;
 	}
 
+	/**
+	 * createAccount.
+	 */
 	private void createAccount(RoutingContext context) {
 		logger.debug("cresteAccount");
 		ValidatedRequest validatedRequest =
@@ -128,6 +149,9 @@ public final class AccountOpenApiRouterBuilder {
 		
 	}
 
+	/**
+	 * getStatus.
+	 */
 	private void getStatus(RoutingContext context) {
 		logger.debug("getStatus");
 		accountService.status()
@@ -136,6 +160,9 @@ public final class AccountOpenApiRouterBuilder {
 		
 	}
 
+	/**
+	 * searchAccounts.
+	 */
 	private void searchAccounts(RoutingContext context) {
 		logger.debug("searchAccounts");
 		ValidatedRequest validatedRequest =
@@ -147,6 +174,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * findByServicePackageExpire.
+	 */
 	private void findByServicePackageExpire(RoutingContext context) {
 		logger.debug("findByServicePackageExpiry");
 		ValidatedRequest validatedRequest =
@@ -159,6 +189,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * findByUserProduct.
+	 */
 	private void findByUserProduct(RoutingContext context) {
 		logger.debug("findByUserProduct");
 		ValidatedRequest validatedRequest =
@@ -171,6 +204,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 
+	/**
+	 * deleteAccountByUid.
+	 */
 	private void deleteAccountByUid(RoutingContext context) {
 		logger.debug("deleteAccountByUid");
 		ValidatedRequest validatedRequest =
@@ -187,6 +223,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 
+	/**
+	 * modifyAccountByUid.
+	 */
 	private void modifyAccountByUid(RoutingContext context) {
 		logger.debug("modifyAccountByUid");
 		ValidatedRequest validatedRequest =
@@ -204,6 +243,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * parseUid.
+	 */
 	static Uid parseUid(String uidToken) {
 		ErrorTickets.checkNotNull(uidToken, "uid token is mandatory");
 		Uid uid;
@@ -221,6 +263,9 @@ public final class AccountOpenApiRouterBuilder {
 		return uid;
 	}
 	
+	/**
+	 * attachAccountUser.
+	 */
 	private void attachAccountUser(RoutingContext context) {
 		logger.debug("attachAccountUser");
 		ValidatedRequest validatedRequest =
@@ -238,6 +283,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * detachAccountUser.
+	 */
 	private void detachAccountUser(RoutingContext context) {
 		logger.debug("detachAccountUser");
 		ValidatedRequest validatedRequest =
@@ -255,6 +303,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * changeAccountOwner.
+	 */
 	private void changeAccountOwner(RoutingContext context) {
 		logger.debug("changeAccountOwner");
 		ValidatedRequest validatedRequest =
@@ -272,6 +323,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * changeAccountBalance.
+	 */
 	private void changeAccountBalance(RoutingContext context) {
 		logger.debug("changeAccountBalance");
 		ValidatedRequest validatedRequest =
@@ -289,6 +343,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * changeAccountServicePackage.
+	 */
 	private void changeAccountServicePackage(RoutingContext context) {
 		logger.debug("changeAccountServicePackage");
 		ValidatedRequest validatedRequest =
@@ -306,6 +363,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * getAccountBusinessDetails.
+	 */
 	private void getAccountBusinessDetails(RoutingContext context) {
 		logger.debug("getAccountBusinessDetails");
 		ValidatedRequest validatedRequest =
@@ -322,6 +382,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 
+	/**
+	 * showAccountByUid.
+	 */
 	private void showAccountByUid(RoutingContext context) {
 		logger.debug("showAccountByUid");
 		ValidatedRequest validatedRequest =
@@ -338,6 +401,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	/**
+	 * showAccountBalanceByUid.
+	 */
 	private void showAccountBalanceByUid(RoutingContext context) {
 		logger.debug("showAccountBalanceByUid");
 		ValidatedRequest validatedRequest =
@@ -354,6 +420,9 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 
+	/**
+	 * customizeRouter.
+	 */
 	private Router customizeRouter(Router router) {
 		router.route()
 		.failureHandler(new ExceptionNormalizerHandler())

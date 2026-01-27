@@ -12,16 +12,25 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.HttpException;
 
+/**
+ * HttpErrorResponseHandler.
+ */
 public class HttpErrorResponseHandler implements Handler<RoutingContext> {
 		
 	private boolean printStackTrace;
 	private boolean sanitizeUnexpectedErrors;
 
+	/**
+	 * Constructs HttpErrorResponseHandler.
+	 */
 	public HttpErrorResponseHandler(boolean printStackTrace, boolean sanitizeUnexpectedErrors) {
 		this.printStackTrace = printStackTrace;
 		this.sanitizeUnexpectedErrors = sanitizeUnexpectedErrors;
 	}
 	
+	/**
+	 * handle.
+	 */
 	@Override
 	public void handle(RoutingContext ctx) {
 		ErrorTicket et;
@@ -49,6 +58,9 @@ public class HttpErrorResponseHandler implements Handler<RoutingContext> {
 		.end(json.toBuffer());
 	}
 
+	/**
+	 * parse.
+	 */
 	private static ErrorTicket parse(HttpException ex) {
 		var builder = ErrorTicket.builder()
 				.withStatusCode(ex.getStatusCode())
@@ -68,6 +80,9 @@ public class HttpErrorResponseHandler implements Handler<RoutingContext> {
 		return builder.build();
 	}
 	
+	/**
+	 * stackTraceToJson.
+	 */
 	public static JsonArray stackTraceToJson(StackTraceElement[] frames) {
 		JsonArray arr = new JsonArray();
 		if (frames == null) return arr;
@@ -80,6 +95,9 @@ public class HttpErrorResponseHandler implements Handler<RoutingContext> {
 		return arr;
 	}
 
+	/**
+	 * source.
+	 */
 	private static String source(StackTraceElement f) {
 		String file = f.getFileName();
 		int line = f.getLineNumber();

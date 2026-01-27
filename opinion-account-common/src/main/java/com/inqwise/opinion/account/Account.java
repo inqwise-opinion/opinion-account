@@ -10,6 +10,9 @@ import com.inqwise.opinion.common.OpinionEntityStatus;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Account.
+ */
 @DataObject
 public class Account {
 	public static class Keys {
@@ -63,6 +66,9 @@ public class Account {
 	private Integer maxDepositAmount;
 	private OpinionEntityStatus status;
 
+	/**
+	 * Constructs Account.
+	 */
 	private Account(Builder builder) {
 		this.uidToken = builder.uidToken;
 		this.id = builder.id;
@@ -88,6 +94,9 @@ public class Account {
 		this.status = builder.status;
 	}
 
+	/**
+	 * Constructs Account.
+	 */
 	public Account(JsonObject json) {
 		uidToken = json.getString(Keys.UID);
 		id = json.getLong(Keys.ID);
@@ -112,94 +121,163 @@ public class Account {
 		status = Optional.ofNullable(json.getInteger(Keys.STATUS_ID)).map(OpinionEntityStatus::valueOf).orElse(null);
 	}
 	
+	/**
+	 * getMaxDepositAmount.
+	 */
 	public Integer getMaxDepositAmount() {
 		return maxDepositAmount;
 	}
 	
+	/**
+	 * getMinDepositAmount.
+	 */
 	public Integer getMinDepositAmount() {
 		return minDepositAmount;
 	}
 	
+	/**
+	 * getMaxUsers.
+	 */
 	public Integer getMaxUsers() {
 		return maxUsers;
 	}
 	
+	/**
+	 * getTimezoneOffset.
+	 */
 	public Integer getTimezoneOffset() {
 		return timezoneOffset;
 	}
 	
+	/**
+	 * getUidToken.
+	 */
 	public String getUidToken() {
 		return uidToken;
 	}
 	
+	/**
+	 * getId.
+	 */
 	public Long getId() {
 		return id;
 	}
 	
+	/**
+	 * getName.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * getDetails.
+	 */
 	public String getDetails() {
 		return details;
 	}
 	
+	/**
+	 * getOwnerId.
+	 */
 	public Long getOwnerId() {
 		return ownerId;
 	}
 	
+	/**
+	 * getTimezone.
+	 */
 	public String getTimezone() {
 		return timezone;
 	}
 	
+	/**
+	 * getCreatedAt.
+	 */
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 	
+	/**
+	 * getUpdatedAt.
+	 */
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 	
+	/**
+	 * getActive.
+	 */
 	public Boolean getActive() {
 		return active;
 	}
 	
+	/**
+	 * getServicePackageId.
+	 */
 	public Integer getServicePackageId() {
 		return servicePackageId;
 	}
 	
+	/**
+	 * getBalance.
+	 */
 	public Long getBalance() {
 		return balance;
 	}
 	
+	/**
+	 * getSupplyDaysInterval.
+	 */
 	public Integer getSupplyDaysInterval() {
 		return supplyDaysInterval;
 	}
 	
+	/**
+	 * getNextSupplySessionsCredit.
+	 */
 	public Integer getNextSupplySessionsCredit() {
 		return nextSupplySessionsCredit;
 	}
 	
+	/**
+	 * getLastSessionsCreditedAt.
+	 */
 	public LocalDate getLastSessionsCreditedAt() {
 		return lastSessionsCreditedAt;
 	}
 	
+	/**
+	 * getProductId.
+	 */
 	public Integer getProductId() {
 		return productId;
 	}
 	
+	/**
+	 * getServicePackageExpiredOn.
+	 */
 	public LocalDate getServicePackageExpiredOn() {
 		return servicePackageExpiredOn;
 	}
 	
+	/**
+	 * getServicePackageName.
+	 */
 	public String getServicePackageName() {
 		return servicePackageName;
 	}
 	
+	/**
+	 * getStatus.
+	 */
 	public OpinionEntityStatus getStatus() {
 		return status;
 	}
 	
+	/**
+	 * toJson.
+	 */
 	public JsonObject toJson() {
 		var json = new JsonObject();
 		
@@ -290,10 +368,16 @@ public class Account {
 		return json;
 	}
 
+	/**
+	 * builder.
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	/**
+	 * builderFrom.
+	 */
 	public static Builder builderFrom(Account account) {
 		return new Builder(account);
 	}
@@ -322,9 +406,15 @@ public class Account {
 		private Integer maxDepositAmount;
 		private OpinionEntityStatus status;
 
+		/**
+		 * Builder.
+		 */
 		private Builder() {
 		}
 
+		/**
+		 * Builder.
+		 */
 		private Builder(Account account) {
 			this.uidToken = account.uidToken;
 			this.id = account.id;
@@ -350,121 +440,193 @@ public class Account {
 			this.status = account.status;
 		}
 
+		/**
+		 * withUidToken.
+		 */
 		public Builder withUidToken(String uidToken) {
 			this.uidToken = uidToken;
 			return this;
 		}
 
+		/**
+		 * withId.
+		 */
 		public Builder withId(Long id) {
 			this.id = id;
 			return this;
 		}
 
+		/**
+		 * withServicePackageId.
+		 */
 		public Builder withServicePackageId(Integer servicePackageId) {
 			this.servicePackageId = servicePackageId;
 			return this;
 		}
 
+		/**
+		 * withServicePackageExpiredOn.
+		 */
 		public Builder withServicePackageExpiredOn(LocalDate servicePackageExpiredOn) {
 			this.servicePackageExpiredOn = servicePackageExpiredOn;
 			return this;
 		}
 
+		/**
+		 * withServicePackageName.
+		 */
 		public Builder withServicePackageName(String servicePackageName) {
 			this.servicePackageName = servicePackageName;
 			return this;
 		}
 
+		/**
+		 * withProductId.
+		 */
 		public Builder withProductId(Integer productId) {
 			this.productId = productId;
 			return this;
 		}
 
+		/**
+		 * withName.
+		 */
 		public Builder withName(String name) {
 			this.name = name;
 			return this;
 		}
 
+		/**
+		 * withDetails.
+		 */
 		public Builder withDetails(String details) {
 			this.details = details;
 			return this;
 		}
 
+		/**
+		 * withOwnerId.
+		 */
 		public Builder withOwnerId(Long ownerId) {
 			this.ownerId = ownerId;
 			return this;
 		}
 
+		/**
+		 * withTimezone.
+		 */
 		public Builder withTimezone(String timezone) {
 			this.timezone = timezone;
 			return this;
 		}
 
+		/**
+		 * withCreatedAt.
+		 */
 		public Builder withCreatedAt(LocalDateTime createdAt) {
 			this.createdAt = createdAt;
 			return this;
 		}
 
+		/**
+		 * withUpdatedAt.
+		 */
 		public Builder withUpdatedAt(LocalDateTime updatedAt) {
 			this.updatedAt = updatedAt;
 			return this;
 		}
 
+		/**
+		 * withActive.
+		 */
 		public Builder withActive(Boolean active) {
 			this.active = active;
 			return this;
 		}
 
+		/**
+		 * withBalance.
+		 */
 		public Builder withBalance(Long balance) {
 			this.balance = balance;
 			return this;
 		}
 
+		/**
+		 * withSupplyDaysInterval.
+		 */
 		public Builder withSupplyDaysInterval(Integer supplyDaysInterval) {
 			this.supplyDaysInterval = supplyDaysInterval;
 			return this;
 		}
 
+		/**
+		 * withNextSupplySessionsCredit.
+		 */
 		public Builder withNextSupplySessionsCredit(Integer nextSupplySessionsCredit) {
 			this.nextSupplySessionsCredit = nextSupplySessionsCredit;
 			return this;
 		}
 
+		/**
+		 * withLastSessionsCreditedAt.
+		 */
 		public Builder withLastSessionsCreditedAt(LocalDate lastSessionsCreditedAt) {
 			this.lastSessionsCreditedAt = lastSessionsCreditedAt;
 			return this;
 		}
 
+		/**
+		 * withTimezoneOffset.
+		 */
 		public Builder withTimezoneOffset(Integer timezoneOffset) {
 			this.timezoneOffset = timezoneOffset;
 			return this;
 		}
 
+		/**
+		 * withMaxUsers.
+		 */
 		public Builder withMaxUsers(Integer maxUsers) {
 			this.maxUsers = maxUsers;
 			return this;
 		}
 
+		/**
+		 * withMinDepositAmount.
+		 */
 		public Builder withMinDepositAmount(Integer minDepositAmount) {
 			this.minDepositAmount = minDepositAmount;
 			return this;
 		}
 
+		/**
+		 * withMaxDepositAmount.
+		 */
 		public Builder withMaxDepositAmount(Integer maxDepositAmount) {
 			this.maxDepositAmount = maxDepositAmount;
 			return this;
 		}
 
+		/**
+		 * withStatus.
+		 */
 		public Builder withStatus(OpinionEntityStatus status) {
 			this.status = status;
 			return this;
 		}
 
+		/**
+		 * build.
+		 */
 		public Account build() {
 			return new Account(this);
 		}
 	}
 
+	/**
+	 * toString.
+	 */
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("uidToken", uidToken).add("id", id)

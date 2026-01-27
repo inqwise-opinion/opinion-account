@@ -1,5 +1,8 @@
 package com.inqwise.opinion.account;
 
+/**
+ * AccountBalanceChangeSet.
+ */
 public interface AccountBalanceChangeSet {
 	Long getId();
 	Long getBackofficeUserId();

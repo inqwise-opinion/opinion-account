@@ -11,6 +11,9 @@ import com.inqwise.opinion.common.UidPrefixGenerator;
 import io.vertx.sqlclient.templates.RowMapper;
 import io.vertx.sqlclient.templates.TupleMapper;
 
+/**
+ * DaoMappers.
+ */
 class DaoMappers {
 	public static final TupleMapper<AccountIdentifiable> IDENTITY_PARAMS = TupleMapper.mapper(identity -> {
 		Map<String, Object> parameters = new HashMap<>();
@@ -52,6 +55,9 @@ class DaoMappers {
 		return builder.build();
 	};
 
+	/**
+	 * getCreateParams.
+	 */
 	public static final TupleMapper<CreateRequest> getCreateParams(UidPrefixGenerator generator){
 		return TupleMapper.mapper(request -> { 
 			Map<String, Object> parameters = new HashMap<>();

@@ -16,8 +16,14 @@ import io.vertx.core.VerticleBase;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 
+/**
+ * AccountVerticle.
+ */
 public class AccountVerticle extends VerticleBase {
 
+	/**
+	 * getLogger.
+	 */
 	private static final Logger logger = LogManager.getLogger(AccountVerticle.class);
 
 	@Inject
@@ -30,6 +36,9 @@ public class AccountVerticle extends VerticleBase {
 
 	private ConfigRetriever retriever;
 
+	/**
+	 * start.
+	 */
 	@Override
 	public Future<?> start() throws Exception {
 		logger.info("AccountVerticle - start");
@@ -54,6 +63,9 @@ public class AccountVerticle extends VerticleBase {
 		});
 	}
 
+	/**
+	 * stop.
+	 */
 	@Override
 	public Future<?> stop() throws Exception {
 		Future<Void> lastFuture = Future.succeededFuture();

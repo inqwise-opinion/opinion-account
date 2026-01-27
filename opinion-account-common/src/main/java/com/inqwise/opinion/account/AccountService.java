@@ -7,6 +7,9 @@ import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * AccountService.
+ */
 @ProxyGen
 public interface AccountService {
 	String SERVICE_NAME = "account-eb-service";

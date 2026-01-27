@@ -1,5 +1,8 @@
 package com.inqwise.opinion.account;
 
+/**
+ * AccountDetailsChangeSet.
+ */
 public interface AccountDetailsChangeSet {
 	Long getId();
 	String getDetails();

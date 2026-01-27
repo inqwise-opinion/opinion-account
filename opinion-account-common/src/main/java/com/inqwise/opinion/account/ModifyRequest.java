@@ -8,6 +8,9 @@ import io.vertx.core.json.JsonObject;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * ModifyRequest.
+ */
 @DataObject
 public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeSet, AccountBusinessDetailsChangeSet, AccountUserAssociationChangeSet, AccountOwnerChangeSet, AccountBalanceChangeSet, AccountServicePackageChangeSet {
 	
@@ -45,6 +48,9 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	private LocalDateTime expiryAt;
 	private Integer maxUsers;
 
+	/**
+	 * Constructs ModifyRequest.
+	 */
 	private ModifyRequest(Builder builder) {
 		this.uidPrefix = builder.uidPrefix;
 		this.id = builder.id;
@@ -117,6 +123,9 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		public static final String MAX_USERS = "max_users";
 	}
 	
+	/**
+	 * Constructs ModifyRequest.
+	 */
 	public ModifyRequest(JsonObject json) {
 		uidPrefix = json.getString(Keys.UID_PREFIX);
 		id = json.getLong(Keys.ID);
@@ -153,6 +162,9 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		maxUsers = json.getInteger(Keys.MAX_USERS);
 	}
 	
+	/**
+	 * toJson.
+	 */
 	public JsonObject toJson() {
 		var json = new JsonObject();
 		if(null != uidPrefix) {
@@ -289,6 +301,9 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		return json;
 	}
 
+	/**
+	 * toInteger.
+	 */
 	private static Integer toInteger(Object value) {
 		if(value instanceof Number number) {
 			return number.intValue();
@@ -301,173 +316,278 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		return null;
 	}
 	
+	/**
+	 * getUidPrefix.
+	 */
 	public String getUidPrefix() {
 		return uidPrefix;
 	}
 	
+	/**
+	 * getId.
+	 */
 	@Override
 	public Long getId() {
 		return id;
 	}
 	
+	/**
+	 * getSourceId.
+	 */
 	@Override
 	public Long getSourceId() {
 		return sourceId;
 	}
 	
+	/**
+	 * getBackofficeUserId.
+	 */
 	@Override
 	public Long getBackofficeUserId() {
 		return backofficeUserId;
 	}
 	
+	/**
+	 * getUserId.
+	 */
 	@Override
 	public Long getUserId() {
 		return userId;
 	}
 	
+	/**
+	 * getOwnerId.
+	 */
 	@Override
 	public Long getOwnerId() {
 		return ownerId;
 	}
 	
+	/**
+	 * getProductId.
+	 */
 	public Long getProductId() {
 		return productId;
 	}
 	
+	/**
+	 * getAccountId.
+	 */
 	@Override
 	public Long getAccountId() {
 		return accountId;
 	}
 
+	/**
+	 * getBusinessCompanyName.
+	 */
 	@Override
 	public String getBusinessCompanyName() {
 		return businessCompanyName;
 	}
 
+	/**
+	 * getBusinessFirstName.
+	 */
 	@Override
 	public String getBusinessFirstName() {
 		return businessFirstName;
 	}
 
+	/**
+	 * getBusinessLastName.
+	 */
 	@Override
 	public String getBusinessLastName() {
 		return businessLastName;
 	}
 
+	/**
+	 * getBusinessAddress1.
+	 */
 	@Override
 	public String getBusinessAddress1() {
 		return businessAddress1;
 	}
 
+	/**
+	 * getBusinessAddress2.
+	 */
 	@Override
 	public String getBusinessAddress2() {
 		return businessAddress2;
 	}
 
+	/**
+	 * getBusinessCity.
+	 */
 	@Override
 	public String getBusinessCity() {
 		return businessCity;
 	}
 
+	/**
+	 * getBusinessCountryId.
+	 */
 	@Override
 	public Integer getBusinessCountryId() {
 		return businessCountryId;
 	}
 
+	/**
+	 * getBusinessStateId.
+	 */
 	@Override
 	public Integer getBusinessStateId() {
 		return businessStateId;
 	}
 
+	/**
+	 * getBusinessPostalCode.
+	 */
 	@Override
 	public String getBusinessPostalCode() {
 		return businessPostalCode;
 	}
 
+	/**
+	 * getBusinessPhone1.
+	 */
 	@Override
 	public String getBusinessPhone1() {
 		return businessPhone1;
 	}
 	
+	/**
+	 * getDetails.
+	 */
 	@Override
 	public String getDetails() {
 		return details;
 	}
 	
+	/**
+	 * getTimezoneId.
+	 */
 	@Override
 	public Integer getTimezoneId() {
 		return timezoneId;
 	}
 	
+	/**
+	 * getName.
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * getIsActive.
+	 */
 	@Override
 	public Boolean getIsActive() {
 		return isActive;
 	}
 	
+	/**
+	 * getIncludeDepositBounds.
+	 */
 	@Override
 	public Boolean getIncludeDepositBounds() {
 		return includeDepositBounds;
 	}
 	
+	/**
+	 * getMinDepositAmount.
+	 */
 	@Override
 	public Integer getMinDepositAmount() {
 		return minDepositAmount;
 	}
 	
+	/**
+	 * getMaxDepositAmount.
+	 */
 	@Override
 	public Integer getMaxDepositAmount() {
 		return maxDepositAmount;
 	}
 	
+	/**
+	 * getAmount.
+	 */
 	@Override
 	public Integer getAmount() {
 		return amount;
 	}
 	
+	/**
+	 * getOperationType.
+	 */
 	@Override
 	public AccountOperationType getOperationType() {
 		return operationType;
 	}
 	
+	/**
+	 * getSessionId.
+	 */
 	@Override
 	public String getSessionId() {
 		return sessionId;
 	}
 	
+	/**
+	 * getGeoCountryCode.
+	 */
 	@Override
 	public String getGeoCountryCode() {
 		return geoCountryCode;
 	}
 	
+	/**
+	 * getClientIp.
+	 */
 	@Override
 	public String getClientIp() {
 		return clientIp;
 	}
 	
+	/**
+	 * getServicePackageId.
+	 */
 	@Override
 	public Integer getServicePackageId() {
 		return servicePackageId;
 	}
 	
+	/**
+	 * getExpiryAt.
+	 */
 	@Override
 	public LocalDateTime getExpiryAt() {
 		return expiryAt;
 	}
 	
+	/**
+	 * getMaxUsers.
+	 */
 	@Override
 	public Integer getMaxUsers() {
 		return maxUsers;
 	}
 
+	/**
+	 * builder.
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	/**
+	 * builderFrom.
+	 */
 	public static Builder builderFrom(ModifyRequest modifyRequest) {
 		return new Builder(modifyRequest);
 	}
@@ -507,9 +627,15 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		private LocalDateTime expiryAt;
 		private Integer maxUsers;
 
+		/**
+		 * Builder.
+		 */
 		private Builder() {
 		}
 
+		/**
+		 * Builder.
+		 */
 		private Builder(ModifyRequest modifyRequest) {
 			this.uidPrefix = modifyRequest.uidPrefix;
 			this.id = modifyRequest.id;
@@ -546,176 +672,281 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			this.maxUsers = modifyRequest.maxUsers;
 		}
 
+		/**
+		 * withUidPrefix.
+		 */
 		public Builder withUidPrefix(String uidPrefix) {
 			this.uidPrefix = uidPrefix;
 			return this;
 		}
 
+		/**
+		 * withId.
+		 */
 		public Builder withId(Long id) {
 			this.id = id;
 			return this;
 		}
 		
+		/**
+		 * withSourceId.
+		 */
 		public Builder withSourceId(Long sourceId) {
 			this.sourceId = sourceId;
 			return this;
 		}
 		
+		/**
+		 * withBackofficeUserId.
+		 */
 		public Builder withBackofficeUserId(Long backofficeUserId) {
 			this.backofficeUserId = backofficeUserId;
 			return this;
 		}
 		
+		/**
+		 * withUserId.
+		 */
 		public Builder withUserId(Long userId) {
 			this.userId = userId;
 			return this;
 		}
 		
+		/**
+		 * withOwnerId.
+		 */
 		public Builder withOwnerId(Long ownerId) {
 			this.ownerId = ownerId;
 			return this;
 		}
 		
+		/**
+		 * withProductId.
+		 */
 		public Builder withProductId(Long productId) {
 			this.productId = productId;
 			return this;
 		}
 		
+		/**
+		 * withAccountId.
+		 */
 		public Builder withAccountId(Long accountId) {
 			this.accountId = accountId;
 			return this;
 		}
 
+		/**
+		 * withBusinessCompanyName.
+		 */
 		public Builder withBusinessCompanyName(String businessCompanyName) {
 			this.businessCompanyName = businessCompanyName;
 			return this;
 		}
 
+		/**
+		 * withBusinessFirstName.
+		 */
 		public Builder withBusinessFirstName(String businessFirstName) {
 			this.businessFirstName = businessFirstName;
 			return this;
 		}
 
+		/**
+		 * withBusinessLastName.
+		 */
 		public Builder withBusinessLastName(String businessLastName) {
 			this.businessLastName = businessLastName;
 			return this;
 		}
 
+		/**
+		 * withBusinessAddress1.
+		 */
 		public Builder withBusinessAddress1(String businessAddress1) {
 			this.businessAddress1 = businessAddress1;
 			return this;
 		}
 
+		/**
+		 * withBusinessAddress2.
+		 */
 		public Builder withBusinessAddress2(String businessAddress2) {
 			this.businessAddress2 = businessAddress2;
 			return this;
 		}
 
+		/**
+		 * withBusinessCity.
+		 */
 		public Builder withBusinessCity(String businessCity) {
 			this.businessCity = businessCity;
 			return this;
 		}
 
+		/**
+		 * withBusinessCountryId.
+		 */
 		public Builder withBusinessCountryId(Integer businessCountryId) {
 			this.businessCountryId = businessCountryId;
 			return this;
 		}
 
+		/**
+		 * withBusinessStateId.
+		 */
 		public Builder withBusinessStateId(Integer businessStateId) {
 			this.businessStateId = businessStateId;
 			return this;
 		}
 
+		/**
+		 * withBusinessPostalCode.
+		 */
 		public Builder withBusinessPostalCode(String businessPostalCode) {
 			this.businessPostalCode = businessPostalCode;
 			return this;
 		}
 
+		/**
+		 * withBusinessPhone1.
+		 */
 		public Builder withBusinessPhone1(String businessPhone1) {
 			this.businessPhone1 = businessPhone1;
 			return this;
 		}
 		
+		/**
+		 * withDetails.
+		 */
 		public Builder withDetails(String details) {
 			this.details = details;
 			return this;
 		}
 		
+		/**
+		 * withTimezoneId.
+		 */
 		public Builder withTimezoneId(Integer timezoneId) {
 			this.timezoneId = timezoneId;
 			return this;
 		}
 		
+		/**
+		 * withName.
+		 */
 		public Builder withName(String name) {
 			this.name = name;
 			return this;
 		}
 		
+		/**
+		 * withIsActive.
+		 */
 		public Builder withIsActive(Boolean isActive) {
 			this.isActive = isActive;
 			return this;
 		}
 		
+		/**
+		 * withIncludeDepositBounds.
+		 */
 		public Builder withIncludeDepositBounds(Boolean includeDepositBounds) {
 			this.includeDepositBounds = includeDepositBounds;
 			return this;
 		}
 		
+		/**
+		 * withMinDepositAmount.
+		 */
 		public Builder withMinDepositAmount(Integer minDepositAmount) {
 			this.minDepositAmount = minDepositAmount;
 			return this;
 		}
 		
+		/**
+		 * withMaxDepositAmount.
+		 */
 		public Builder withMaxDepositAmount(Integer maxDepositAmount) {
 			this.maxDepositAmount = maxDepositAmount;
 			return this;
 		}
 		
+		/**
+		 * withAmount.
+		 */
 		public Builder withAmount(Integer amount) {
 			this.amount = amount;
 			return this;
 		}
 		
+		/**
+		 * withOperationType.
+		 */
 		public Builder withOperationType(AccountOperationType operationType) {
 			this.operationType = operationType;
 			return this;
 		}
 		
+		/**
+		 * withSessionId.
+		 */
 		public Builder withSessionId(String sessionId) {
 			this.sessionId = sessionId;
 			return this;
 		}
 		
+		/**
+		 * withGeoCountryCode.
+		 */
 		public Builder withGeoCountryCode(String geoCountryCode) {
 			this.geoCountryCode = geoCountryCode;
 			return this;
 		}
 		
+		/**
+		 * withClientIp.
+		 */
 		public Builder withClientIp(String clientIp) {
 			this.clientIp = clientIp;
 			return this;
 		}
 		
+		/**
+		 * withServicePackageId.
+		 */
 		public Builder withServicePackageId(Integer servicePackageId) {
 			this.servicePackageId = servicePackageId;
 			return this;
 		}
 		
+		/**
+		 * withExpiryAt.
+		 */
 		public Builder withExpiryAt(LocalDateTime expiryAt) {
 			this.expiryAt = expiryAt;
 			return this;
 		}
 		
+		/**
+		 * withMaxUsers.
+		 */
 		public Builder withMaxUsers(Integer maxUsers) {
 			this.maxUsers = maxUsers;
 			return this;
 		}
 
+		/**
+		 * build.
+		 */
 		public ModifyRequest build() {
 			return new ModifyRequest(this);
 		}
 	}
 
+	/**
+	 * toString.
+	 */
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("uidPrefix", uidPrefix).add("id", id)
