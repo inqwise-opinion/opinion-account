@@ -1,5 +1,6 @@
 package com.inqwise.opinion.account;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -122,9 +123,9 @@ class DefaultAccountService implements AccountService {
 		logger.debug("modify({})", request);
 		return getInternal(request, false).compose(account -> {
 			var hasDetailsChanges = Stream.of(
-					request.getComments(), 
+					request.getDetails(), 
 					request.getTimezoneId(), 
-					request.getAccountName(), 
+					request.getName(), 
 					request.getIsActive(), 
 					request.getOwnerId(), 
 					request.getIncludeDepositBounds(), 
@@ -193,6 +194,37 @@ class DefaultAccountService implements AccountService {
 		return getInternal(request, false)
 				.compose(account -> changeOwner(account, (AccountOwnerChangeSet)request));
 	}
+	
+	@Override
+	public Future<Void> changeServicePackage(ModifyRequest request) {
+		logger.debug("changeServicePackage({})", request);
+		Long accountId = request.getAccountId();
+		if(null == accountId) {
+			accountId = request.getId();
+		}
+		if(null == accountId) {
+			throw ErrorTicket.builder().withError(ErrorCodes.ArgumentWrong)
+				.withDetails("accountId is required")
+				.build();
+		}
+		var identity = AccountIdentity.builder().withId(accountId).build();
+		var builder = ModifyRequest.builderFrom(request).withAccountId(accountId);
+		return getInternal(identity, false)
+				.compose(account -> changeServicePackage(account, (AccountServicePackageChangeSet)builder.build()));
+	}
+	
+	@Override
+	public Future<AccountBusinessDetails> getBusinessDetails(AccountIdentity identity) {
+		logger.debug("getBusinessDetails({})", identity);
+		return getInternal(identity, false).compose(account ->
+			SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.GET_BUSINESS_DETAILS_TEMPLATE)
+				.mapFrom(DaoMappers.GET_BUSINESS_DETAILS_PARAMS)
+				.mapTo(DaoMappers.BUSINESS_DETAILS_ROW)
+				.execute(identity)
+				.map(rs -> rs.stream().findFirst()
+					.orElseThrow(() -> new NotFoundException("account business details")))
+		);
+	}
 
 	@Override
 	public Future<Integer> getBalance(AccountIdentity identity) {
@@ -225,8 +257,8 @@ class DefaultAccountService implements AccountService {
 	@Override
 	public Future<List<Account>> findByUserAndProduct(SearchRequest request) {
 		logger.debug("findByUserAndProduct({})", request);
-		return SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.GET_BY_USER_AND_PRODUCT_TEMPLATE)
-			.mapFrom(DaoMappers.GET_BY_USER_AND_PRODUCT_PARAMS)
+		return SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.FIND_BY_USER_AND_PRODUCT_TEMPLATE)
+			.mapFrom(DaoMappers.FIND_BY_USER_AND_PRODUCT_PARAMS)
 			.mapTo(DaoMappers.ACCOUNT_ROW)
 			.execute(request)
 			.map(rs -> rs.stream().toList());
@@ -234,12 +266,11 @@ class DefaultAccountService implements AccountService {
 
 	private Future<Void> modifyDetails(AccountDetailsChangeSet request) {
 		logger.debug("modifyDetails");
-		ErrorTickets.checkAnyNotNull(List.of(
-				request.getComments(), 
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
+				request.getDetails(), 
 				request.getTimezoneId(), 
-				request.getAccountName(), 
-				request.getIsActive(), 
-				request.getOwnerId(), 
+				request.getName(), 
+				request.getIsActive(),
 				request.getIncludeDepositBounds(), 
 				request.getMinDepositAmount(), 
 				request.getMaxDepositAmount()), 
@@ -248,17 +279,12 @@ class DefaultAccountService implements AccountService {
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.CHANGE_DETAILS_TEMPLATE)
 		.mapFrom(DaoMappers.CHANGE_DETAILS_PARAMS)
 		.execute(request)
-		.map(rs -> {
-			if(rs.rowCount() == 0) {
-				throw new Bug("account #{} not modified", request.getId());
-			}
-			return (Void)null;
-		});
+		.mapEmpty();
 	}
 
 	private Future<Void> modifyBusinessDetails(AccountBusinessDetailsChangeSet request) {
 		logger.debug("modifyBusinessDetails");
-		ErrorTickets.checkAnyNotNull(List.of(
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
 				request.getBusinessCompanyName(),
 				request.getBusinessFirstName(),
 				request.getBusinessLastName(),
@@ -274,17 +300,12 @@ class DefaultAccountService implements AccountService {
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.CHANGE_BUSINESS_DETAILS_TEMPLATE)
 		.mapFrom(DaoMappers.CHANGE_BUSINESS_DETAILS_PARAMS)
 		.execute(request)
-		.map(rs -> {
-			if(rs.rowCount() == 0) {
-				throw new Bug("account #{} business details not modified", request.getId());
-			}
-			return (Void)null;
-		});
+		.mapEmpty();
 	}
 
 	private Future<Void> attachUser(AccountUserAssociationChangeSet request) {
 		logger.debug("attachUser");
-		ErrorTickets.checkAnyNotNull(List.of(
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
 				request.getSourceId(),
 				request.getUserId(),
 				request.getId(),
@@ -294,17 +315,12 @@ class DefaultAccountService implements AccountService {
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.ATTACH_USER_TEMPLATE)
 		.mapFrom(DaoMappers.ATTACH_USER_PARAMS)
 		.execute(request)
-		.map(rs -> {
-			if(rs.rowCount() == 0) {
-				throw new Bug("account #{} user not attached", request.getId());
-			}
-			return (Void)null;
-		});
+		.mapEmpty();
 	}
 
 	private Future<Void> detachUser(AccountUserAssociationChangeSet request) {
 		logger.debug("detachUser");
-		ErrorTickets.checkAnyNotNull(List.of(
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
 				request.getSourceId(),
 				request.getUserId(),
 				request.getId(),
@@ -314,18 +330,13 @@ class DefaultAccountService implements AccountService {
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.DETACH_USER_TEMPLATE)
 		.mapFrom(DaoMappers.DETACH_USER_PARAMS)
 		.execute(request)
-		.map(rs -> {
-			if(rs.rowCount() == 0) {
-				throw new Bug("account #{} user not detached", request.getId());
-			}
-			return (Void)null;
-		});
+		.mapEmpty();
 	}
 
 	private Future<Void> changeOwner(Account account, AccountOwnerChangeSet request) {
 		logger.debug("changeOwner");
 		
-		ErrorTickets.checkAnyNotNull(List.of(
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
 				request.getSourceId(),
 				request.getOwnerId(),
 				request.getId(),
@@ -337,15 +348,30 @@ class DefaultAccountService implements AccountService {
 		.execute(request)
 		.mapEmpty();
 	}
+	
+	private Future<Void> changeServicePackage(Account account, AccountServicePackageChangeSet request) {
+		logger.debug("changeServicePackage");
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
+				request.getAccountId(),
+				request.getServicePackageId(),
+				request.getExpiryAt(),
+				request.getMaxUsers()),
+				"no changes provided to change service package");
+		return
+		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.CHANGE_SERVICE_PACKAGE_TEMPLATE)
+		.mapFrom(DaoMappers.CHANGE_SERVICE_PACKAGE_PARAMS)
+		.execute(request)
+		.mapEmpty();
+	}
 
 	private Future<Void> changeBalance(AccountBalanceChangeSet request) {
 		logger.debug("changeBalance");
-		ErrorTickets.checkAnyNotNull(List.of(
+		ErrorTickets.checkAnyNotNull(Arrays.asList(
 				request.getBackofficeUserId(),
-				request.getComments(),
+				request.getDetails(),
 				request.getAmount(),
-				request.getAccopTypeId(),
-				request.getSourceGuid(),
+				request.getOperationType(),
+				request.getSourceId(),
 				request.getSessionId(),
 				request.getGeoCountryCode(),
 				request.getClientIp()),
@@ -354,13 +380,6 @@ class DefaultAccountService implements AccountService {
 		SqlTemplate.forQuery(pooledClientProvider.get(), DaoMappers.CHANGE_BALANCE_TEMPLATE)
 		.mapFrom(DaoMappers.CHANGE_BALANCE_PARAMS)
 		.execute(request)
-		.map(rs -> {
-			if(rs.rowCount() == 0) {
-				throw new Bug("account #{} balance not changed", request.getId());
-			}
-			return (Void)null;
-		});
+		.mapEmpty();
 	}
-	
-	
 }

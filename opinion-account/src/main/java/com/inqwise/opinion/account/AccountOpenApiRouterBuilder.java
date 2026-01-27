@@ -11,6 +11,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.inqwise.errors.ErrorCodes;
 import com.inqwise.errors.ErrorTicket;
+import com.inqwise.errors.ErrorTickets;
 import com.inqwise.opinion.common.RestApiServerOptions;
 import com.inqwise.opinion.common.Uid;
 
@@ -86,6 +87,12 @@ public final class AccountOpenApiRouterBuilder {
 		
 		// detach user
 		routerBuilder.getRoute("detachAccountUser").addHandler(this::detachAccountUser);
+		
+		// change service package
+		routerBuilder.getRoute("changeAccountServicePackage").addHandler(this::changeAccountServicePackage);
+		
+		// business details
+		routerBuilder.getRoute("getAccountBusinessDetails").addHandler(this::getAccountBusinessDetails);
 
 		// delete
 		routerBuilder.getRoute("deleteAccountById").addHandler(this::deleteAccountByUid);
@@ -169,7 +176,7 @@ public final class AccountOpenApiRouterBuilder {
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var identity = AccountIdentity.builder()
 				.withUidPrefix(uid.getPrefix())
 				.withId(uid.getId())
@@ -185,7 +192,7 @@ public final class AccountOpenApiRouterBuilder {
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
 		var builder = ModifyRequest.builderFrom(request);
 		builder
@@ -197,12 +204,29 @@ public final class AccountOpenApiRouterBuilder {
 			.onFailure(context::fail);
 	}
 	
+	static Uid parseUid(String uidToken) {
+		ErrorTickets.checkNotNull(uidToken, "uid token is mandatory");
+		Uid uid;
+		
+		try {
+			uid = Uid.parse(uidToken);
+		} catch (IndexOutOfBoundsException e) {
+			throw ErrorTicket.builder()
+			.withError(ErrorCodes.ArgumentWrong)
+			.withDetails("account uid")
+			.build();
+		} catch(Throwable t) {
+			throw t;
+		}
+		return uid;
+	}
+	
 	private void attachAccountUser(RoutingContext context) {
 		logger.debug("attachAccountUser");
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
 		var builder = ModifyRequest.builderFrom(request);
 		builder
@@ -219,7 +243,7 @@ public final class AccountOpenApiRouterBuilder {
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
 		var builder = ModifyRequest.builderFrom(request);
 		builder
@@ -236,7 +260,7 @@ public final class AccountOpenApiRouterBuilder {
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
 		var builder = ModifyRequest.builderFrom(request);
 		builder
@@ -253,7 +277,7 @@ public final class AccountOpenApiRouterBuilder {
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
 		var builder = ModifyRequest.builderFrom(request);
 		builder
@@ -264,13 +288,46 @@ public final class AccountOpenApiRouterBuilder {
 			.compose(res -> context.response().setStatusCode(204).end())
 			.onFailure(context::fail);
 	}
+	
+	private void changeAccountServicePackage(RoutingContext context) {
+		logger.debug("changeAccountServicePackage");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var request = new ModifyRequest(validatedRequest.getBody().getJsonObject());
+		var builder = ModifyRequest.builderFrom(request);
+		builder
+		.withAccountId(uid.getId())
+		.withUidPrefix(uid.getPrefix());
+		
+		accountService.changeServicePackage(builder.build())
+			.compose(res -> context.response().setStatusCode(204).end())
+			.onFailure(context::fail);
+	}
+	
+	private void getAccountBusinessDetails(RoutingContext context) {
+		logger.debug("getAccountBusinessDetails");
+		ValidatedRequest validatedRequest =
+			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
+		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
+		var uid = Uid.parse(uidToken);
+		var identity = AccountIdentity.builder()
+				.withUidPrefix(uid.getPrefix())
+				.withId(uid.getId())
+				.build();
+		
+		accountService.getBusinessDetails(identity)
+			.compose(res -> context.json(res.toJson()))
+			.onFailure(context::fail);
+	}
 
 	private void showAccountByUid(RoutingContext context) {
 		logger.debug("showAccountByUid");
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var identity = AccountIdentity.builder()
 				.withUidPrefix(uid.getPrefix())
 				.withId(uid.getId())
@@ -286,7 +343,7 @@ public final class AccountOpenApiRouterBuilder {
 		ValidatedRequest validatedRequest =
 			    context.get(RouterBuilder.KEY_META_DATA_VALIDATED_REQUEST);
 		var uidToken = validatedRequest.getPathParameters().get("accountUid").getString();
-		var uid = Uid.parse(uidToken);
+		var uid = parseUid(uidToken);
 		var identity = AccountIdentity.builder()
 				.withUidPrefix(uid.getPrefix())
 				.withId(uid.getId())

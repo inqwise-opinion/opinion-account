@@ -2,7 +2,6 @@ package com.inqwise.opinion.account;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.inqwise.opinion.common.OpinionEntityStatus;
@@ -47,7 +46,7 @@ class DaoMappers {
 		}
 		
 		if(row.getColumnIndex("comments")> -1) {
-			builder.withComments(row.getString("comments"));
+			builder.withDetails(row.getString("comments"));
 		}
 		
 		return builder.build();
@@ -164,21 +163,21 @@ class DaoMappers {
 	
 	public static final String CHANGE_BALANCE_TEMPLATE = "CALL changeBalance("
 			+ "#{p_account_id},"
-			+ "#{p_backoffice_user_id},#{p_comments},#{p_amount},#{p_$accop_type_id},"
-			+ "#{p_source_guid},#{p_session_id},#{p_geo_country_code},#{p_client_ip}"
+			+ "#{p_backoffice_user_id},#{p_comments},#{p_amount},#{p_operation_type_id},"
+			+ "#{p_source_id},#{p_session_id},#{p_geo_country_code},#{p_client_ip}"
 			+ ")";
 	
 	public static final TupleMapper<AccountBalanceChangeSet> CHANGE_BALANCE_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", request.getId());
-		parameters.put("backoffice_user_id", request.getBackofficeUserId());
-		parameters.put("comments", request.getComments());
-		parameters.put("amount", request.getAmount());
-		parameters.put("$accop_type_id", request.getAccopTypeId());
-		parameters.put("$source_guid", request.getSourceGuid());
-		parameters.put("$session_id", request.getSessionId());
-		parameters.put("geo_country_code", request.getGeoCountryCode());
-		parameters.put("client_ip", request.getClientIp());
+		parameters.put("p_backoffice_user_id", request.getBackofficeUserId());
+		parameters.put("p_comments", request.getDetails());
+		parameters.put("p_amount", request.getAmount());
+		parameters.put("p_operation_type_id", request.getOperationType() == null ? null : request.getOperationType().getValueOrNullWhenUndefined());
+		parameters.put("p_source_id", request.getSourceId());
+		parameters.put("p_session_id", request.getSessionId());
+		parameters.put("p_geo_country_code", request.getGeoCountryCode());
+		parameters.put("p_client_ip", request.getClientIp());
 		return parameters;
 	});
 	
@@ -197,19 +196,25 @@ class DaoMappers {
 	public static final String CHANGE_DETAILS_TEMPLATE = "CALL setAccountDetails("
 			+ "#{p_account_id},#{p_comments},"
 			+ "#{p_timezone_id},#{p_account_name},#{p_is_active},"
-			+ "#{p_owner_id},#{p_include_deposit_bounds},"
+			+ "#{p_include_deposit_bounds},"
 			+ "#{p_min_deposit_amount},#{p_max_deposit_amount}"
 			+ ")";
 	
 	public static final TupleMapper<AccountDetailsChangeSet> CHANGE_DETAILS_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_account_id", request.getId());
-		parameters.put("p_comments", request.getComments());
+		parameters.put("p_comments", request.getDetails());
 		parameters.put("p_timezone_id", request.getTimezoneId());
-		parameters.put("p_account_name", request.getAccountName());
+		parameters.put("p_account_name", request.getName());
 		parameters.put("p_is_active", request.getIsActive());
-		parameters.put("p_owner_id", request.getOwnerId());
-		parameters.put("p_include_deposit_bounds", request.getIncludeDepositBounds());
+		boolean includeDepositBounds;
+		if(null == request.getIncludeDepositBounds()) {
+			includeDepositBounds = !(null == request.getMinDepositAmount() && null == request.getMaxDepositAmount());  
+		} else {
+			includeDepositBounds = request.getIncludeDepositBounds();
+		}
+		
+		parameters.put("p_include_deposit_bounds", includeDepositBounds);
 		parameters.put("p_min_deposit_amount", request.getMinDepositAmount());
 		parameters.put("p_max_deposit_amount", request.getMaxDepositAmount());
 		return parameters;
@@ -248,12 +253,27 @@ class DaoMappers {
 		return parameters;
 	});
 	
-	public static final String GET_BY_USER_AND_PRODUCT_TEMPLATE = "CALL getAccountsByUserIdAndProduct("
+	public static final RowMapper<AccountBusinessDetails> BUSINESS_DETAILS_ROW = row -> {
+		return AccountBusinessDetails.builder()
+				.withCompanyName(row.getString("business_company_name"))
+				.withFirstName(row.getString("business_first_name"))
+				.withLastName(row.getString("business_last_name"))
+				.withAddress1(row.getString("business_address1"))
+				.withAddress2(row.getString("business_address2"))
+				.withCity(row.getString("business_city"))
+				.withCountryId(row.getInteger("business_country_id"))
+				.withStateId(row.getInteger("business_state_id"))
+				.withPostalCode(row.getString("business_postal_code"))
+				.withPhone1(row.getString("business_phone1"))
+				.build();
+	};
+	
+	public static final String FIND_BY_USER_AND_PRODUCT_TEMPLATE = "CALL getAccountsByUserIdAndProduct("
 			+ "#{p_user_id},"
 			+ "#{p_product_id}"
 			+ ");";
 	
-	public static final TupleMapper<AccountUserProductCriteria> GET_BY_USER_AND_PRODUCT_PARAMS = TupleMapper.mapper(request ->{
+	public static final TupleMapper<AccountUserProductCriteria> FIND_BY_USER_AND_PRODUCT_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_user_id", request.getUserId());
 		parameters.put("p_product_id", request.getProductId());
@@ -267,6 +287,23 @@ class DaoMappers {
 	public static final TupleMapper<ServicePackageExpiryCriteria> EXPIRED_SERVICE_PACKAGE_PARAMS = TupleMapper.mapper(request ->{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("p_expiry_date", request.getExpiryAt());
+		return parameters;
+	});
+	
+	public static final String CHANGE_SERVICE_PACKAGE_TEMPLATE = "CALL setAccountServicePackage("
+			+ "#{p_account_id},"
+			+ "#{p_service_package_id},"
+			+ "#{p_service_package_expiry_date},"
+			+ "#{p_max_users}"
+			+ ");";
+	
+	public static final TupleMapper<AccountServicePackageChangeSet> CHANGE_SERVICE_PACKAGE_PARAMS = TupleMapper.mapper(request ->{
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("p_account_id", request.getAccountId());
+		parameters.put("p_service_package_id", request.getServicePackageId());
+		parameters.put("p_service_package_expiry_date", request.getExpiryAt());
+		parameters.put("p_max_users", request.getMaxUsers());
+		
 		return parameters;
 	});
 }

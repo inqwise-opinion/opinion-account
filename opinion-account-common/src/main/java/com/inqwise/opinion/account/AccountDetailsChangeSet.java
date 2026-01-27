@@ -2,12 +2,13 @@ package com.inqwise.opinion.account;
 
 public interface AccountDetailsChangeSet {
 	Long getId();
-	String getComments();
+	String getDetails();
 	Integer getTimezoneId();
-	String getAccountName();
+	String getName();
 	Boolean getIsActive();
-	Long getOwnerId();
 	Boolean getIncludeDepositBounds();
 	Integer getMinDepositAmount();
 	Integer getMaxDepositAmount();
+	
+	
 }

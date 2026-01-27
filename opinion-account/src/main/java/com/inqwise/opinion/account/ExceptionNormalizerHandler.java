@@ -17,6 +17,7 @@ public class ExceptionNormalizerHandler extends OncePerRoutingContextHandler {
 		focuser = StackTraceFocuser.builder()
 				.addClass("^io\\.vertx\\.sqlclient")
 				.addClass("^io\\.vertx\\.mysqlclient")
+				.addClass("^com\\.google\\.common")
 				.build();
 	}
 	

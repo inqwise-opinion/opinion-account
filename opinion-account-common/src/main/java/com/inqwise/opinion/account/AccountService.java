@@ -34,6 +34,10 @@ public interface AccountService {
 	Future<Void> changeBalance(ModifyRequest request);
 	
 	Future<Void> changeOwner(ModifyRequest request);
+
+	Future<Void> changeServicePackage(ModifyRequest request);
+	
+	Future<AccountBusinessDetails> getBusinessDetails(AccountIdentity identity);
 	
 	Future<Integer> getBalance(AccountIdentity identity);
 	

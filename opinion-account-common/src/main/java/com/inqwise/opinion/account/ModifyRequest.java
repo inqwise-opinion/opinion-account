@@ -5,8 +5,11 @@ import com.google.common.base.MoreObjects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @DataObject
-public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeSet, AccountBusinessDetailsChangeSet, AccountUserAssociationChangeSet, AccountOwnerChangeSet, AccountBalanceChangeSet {
+public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeSet, AccountBusinessDetailsChangeSet, AccountUserAssociationChangeSet, AccountOwnerChangeSet, AccountBalanceChangeSet, AccountServicePackageChangeSet {
 	
 	private String uidPrefix;
 	private Long id;
@@ -15,6 +18,7 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	private Long userId;
 	private Long ownerId;
 	private Long productId;
+	private Long accountId;
 	private String businessCompanyName;
 	private String businessFirstName;
 	private String businessLastName;
@@ -25,19 +29,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	private Integer businessStateId;
 	private String businessPostalCode;
 	private String businessPhone1;
-	private String comments;
+	private String details;
 	private Integer timezoneId;
-	private String accountName;
+	private String name;
 	private Boolean isActive;
 	private Boolean includeDepositBounds;
 	private Integer minDepositAmount;
 	private Integer maxDepositAmount;
 	private Integer amount;
-	private Integer accopTypeId;
-	private String sourceGuid;
+	private AccountOperationType operationType;
 	private String sessionId;
 	private String geoCountryCode;
 	private String clientIp;
+	private Integer servicePackageId;
+	private LocalDateTime expiryAt;
+	private Integer maxUsers;
 
 	private ModifyRequest(Builder builder) {
 		this.uidPrefix = builder.uidPrefix;
@@ -47,6 +53,7 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		this.userId = builder.userId;
 		this.ownerId = builder.ownerId;
 		this.productId = builder.productId;
+		this.accountId = builder.accountId;
 		this.businessCompanyName = builder.businessCompanyName;
 		this.businessFirstName = builder.businessFirstName;
 		this.businessLastName = builder.businessLastName;
@@ -57,19 +64,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		this.businessStateId = builder.businessStateId;
 		this.businessPostalCode = builder.businessPostalCode;
 		this.businessPhone1 = builder.businessPhone1;
-		this.comments = builder.comments;
+		this.details = builder.details;
 		this.timezoneId = builder.timezoneId;
-		this.accountName = builder.accountName;
+		this.name = builder.name;
 		this.isActive = builder.isActive;
 		this.includeDepositBounds = builder.includeDepositBounds;
 		this.minDepositAmount = builder.minDepositAmount;
 		this.maxDepositAmount = builder.maxDepositAmount;
 		this.amount = builder.amount;
-		this.accopTypeId = builder.accopTypeId;
-		this.sourceGuid = builder.sourceGuid;
+		this.operationType = builder.operationType;
 		this.sessionId = builder.sessionId;
 		this.geoCountryCode = builder.geoCountryCode;
 		this.clientIp = builder.clientIp;
+		this.servicePackageId = builder.servicePackageId;
+		this.expiryAt = builder.expiryAt;
+		this.maxUsers = builder.maxUsers;
 	}
 
 	public static class Keys {
@@ -79,7 +88,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		public static final String BACKOFFICE_USER_ID = "bo_user_id";
 		public static final String USER_ID = "user_id";
 		public static final String OWNER_ID = "owner_id";
-		public static final String PRODUCT_ID = "product_id";	
+		public static final String PRODUCT_ID = "product_id";
+		public static final String ACCOUNT_ID = "account_id";
 		public static final String BUSINESS_COMPANY_NAME = "business_company_name";
 		public static final String BUSINESS_FIRST_NAME = "business_first_name";
 		public static final String BUSINESS_LAST_NAME = "business_last_name";
@@ -90,19 +100,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		public static final String BUSINESS_STATE_ID = "business_state_id";
 		public static final String BUSINESS_POSTAL_CODE = "business_postal_code";
 		public static final String BUSINESS_PHONE1 = "business_phone1";
-		public static final String COMMENTS = "comments";
+		public static final String DETAILS = "details";
 		public static final String TIMEZONE_ID = "timezone_id";
-		public static final String ACCOUNT_NAME = "account_name";
+		public static final String NAME = "name";
 		public static final String IS_ACTIVE = "is_active";
 		public static final String INCLUDE_DEPOSIT_BOUNDS = "include_deposit_bounds";
 		public static final String MIN_DEPOSIT_AMOUNT = "min_deposit_amount";
 		public static final String MAX_DEPOSIT_AMOUNT = "max_deposit_amount";
 		public static final String AMOUNT = "amount";
-		public static final String ACCOP_TYPE_ID = "accop_type_id";
-		public static final String SOURCE_GUID = "source_guid";
+		public static final String OPERATION_TYPE_ID = "operation_type_id";
 		public static final String SESSION_ID = "session_id";
 		public static final String GEO_COUNTRY_CODE = "geo_country_code";
 		public static final String CLIENT_IP = "client_ip";
+		public static final String SERVICE_PACKAGE_ID = "service_package_id";
+		public static final String EXPIRY_AT = "expiry_at";
+		public static final String MAX_USERS = "max_users";
 	}
 	
 	public ModifyRequest(JsonObject json) {
@@ -113,6 +125,7 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		userId = json.getLong(Keys.USER_ID);
 		ownerId = json.getLong(Keys.OWNER_ID);
 		productId = json.getLong(Keys.PRODUCT_ID);
+		accountId = json.getLong(Keys.ACCOUNT_ID);
 		businessCompanyName = json.getString(Keys.BUSINESS_COMPANY_NAME);
 		businessFirstName = json.getString(Keys.BUSINESS_FIRST_NAME);
 		businessLastName = json.getString(Keys.BUSINESS_LAST_NAME);
@@ -123,19 +136,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		businessStateId = json.getInteger(Keys.BUSINESS_STATE_ID);
 		businessPostalCode = json.getString(Keys.BUSINESS_POSTAL_CODE);
 		businessPhone1 = json.getString(Keys.BUSINESS_PHONE1);
-		comments = json.getString(Keys.COMMENTS);
+		details = json.getString(Keys.DETAILS);
 		timezoneId = json.getInteger(Keys.TIMEZONE_ID);
-		accountName = json.getString(Keys.ACCOUNT_NAME);
+		name = json.getString(Keys.NAME);
 		isActive = json.getBoolean(Keys.IS_ACTIVE);
 		includeDepositBounds = json.getBoolean(Keys.INCLUDE_DEPOSIT_BOUNDS);
 		minDepositAmount = toInteger(json.getValue(Keys.MIN_DEPOSIT_AMOUNT));
 		maxDepositAmount = toInteger(json.getValue(Keys.MAX_DEPOSIT_AMOUNT));
 		amount = toInteger(json.getValue(Keys.AMOUNT));
-		accopTypeId = json.getInteger(Keys.ACCOP_TYPE_ID);
-		sourceGuid = json.getString(Keys.SOURCE_GUID);
+		operationType = AccountOperationType.fromInt(json.getInteger(Keys.OPERATION_TYPE_ID));
 		sessionId = json.getString(Keys.SESSION_ID);
 		geoCountryCode = json.getString(Keys.GEO_COUNTRY_CODE);
 		clientIp = json.getString(Keys.CLIENT_IP);
+		servicePackageId = json.getInteger(Keys.SERVICE_PACKAGE_ID);
+		expiryAt = Optional.ofNullable(json.getString(Keys.EXPIRY_AT)).map(Formatters::parseDateTime).orElse(null);
+		maxUsers = json.getInteger(Keys.MAX_USERS);
 	}
 	
 	public JsonObject toJson() {
@@ -166,6 +181,10 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		
 		if(null != productId) {
 			json.put(Keys.PRODUCT_ID, productId);
+		}
+		
+		if(null != accountId) {
+			json.put(Keys.ACCOUNT_ID, accountId);
 		}
 
 		if(null != businessCompanyName) {
@@ -208,16 +227,16 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			json.put(Keys.BUSINESS_PHONE1, businessPhone1);
 		}
 		
-		if(null != comments) {
-			json.put(Keys.COMMENTS, comments);
+		if(null != details) {
+			json.put(Keys.DETAILS, details);
 		}
 		
 		if(null != timezoneId) {
 			json.put(Keys.TIMEZONE_ID, timezoneId);
 		}
 		
-		if(null != accountName) {
-			json.put(Keys.ACCOUNT_NAME, accountName);
+		if(null != name) {
+			json.put(Keys.NAME, name);
 		}
 		
 		if(null != isActive) {
@@ -240,12 +259,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			json.put(Keys.AMOUNT, amount);
 		}
 		
-		if(null != accopTypeId) {
-			json.put(Keys.ACCOP_TYPE_ID, accopTypeId);
-		}
-		
-		if(null != sourceGuid) {
-			json.put(Keys.SOURCE_GUID, sourceGuid);
+		if(null != operationType) {
+			json.put(Keys.OPERATION_TYPE_ID, operationType.getValueOrNullWhenUndefined());
 		}
 		
 		if(null != sessionId) {
@@ -258,6 +273,18 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		
 		if(null != clientIp) {
 			json.put(Keys.CLIENT_IP, clientIp);
+		}
+		
+		if(null != servicePackageId) {
+			json.put(Keys.SERVICE_PACKAGE_ID, servicePackageId);
+		}
+		
+		if(null != expiryAt) {
+			json.put(Keys.EXPIRY_AT, Formatters.formatDateTime(expiryAt));
+		}
+		
+		if(null != maxUsers) {
+			json.put(Keys.MAX_USERS, maxUsers);
 		}
 		return json;
 	}
@@ -305,6 +332,11 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	
 	public Long getProductId() {
 		return productId;
+	}
+	
+	@Override
+	public Long getAccountId() {
+		return accountId;
 	}
 
 	@Override
@@ -358,8 +390,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	}
 	
 	@Override
-	public String getComments() {
-		return comments;
+	public String getDetails() {
+		return details;
 	}
 	
 	@Override
@@ -368,8 +400,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	}
 	
 	@Override
-	public String getAccountName() {
-		return accountName;
+	public String getName() {
+		return name;
 	}
 	
 	@Override
@@ -398,13 +430,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	}
 	
 	@Override
-	public Integer getAccopTypeId() {
-		return accopTypeId;
-	}
-	
-	@Override
-	public String getSourceGuid() {
-		return sourceGuid;
+	public AccountOperationType getOperationType() {
+		return operationType;
 	}
 	
 	@Override
@@ -420,6 +447,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 	@Override
 	public String getClientIp() {
 		return clientIp;
+	}
+	
+	@Override
+	public Integer getServicePackageId() {
+		return servicePackageId;
+	}
+	
+	@Override
+	public LocalDateTime getExpiryAt() {
+		return expiryAt;
+	}
+	
+	@Override
+	public Integer getMaxUsers() {
+		return maxUsers;
 	}
 
 	public static Builder builder() {
@@ -438,6 +480,7 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		private Long userId;
 		private Long ownerId;
 		private Long productId;
+		private Long accountId;
 		private String businessCompanyName;
 		private String businessFirstName;
 		private String businessLastName;
@@ -448,19 +491,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		private Integer businessStateId;
 		private String businessPostalCode;
 		private String businessPhone1;
-		private String comments;
+		private String details;
 		private Integer timezoneId;
-		private String accountName;
+		private String name;
 		private Boolean isActive;
 		private Boolean includeDepositBounds;
 		private Integer minDepositAmount;
 		private Integer maxDepositAmount;
 		private Integer amount;
-		private Integer accopTypeId;
-		private String sourceGuid;
+		private AccountOperationType operationType;
 		private String sessionId;
 		private String geoCountryCode;
 		private String clientIp;
+		private Integer servicePackageId;
+		private LocalDateTime expiryAt;
+		private Integer maxUsers;
 
 		private Builder() {
 		}
@@ -473,6 +518,7 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			this.userId = modifyRequest.userId;
 			this.ownerId = modifyRequest.ownerId;
 			this.productId = modifyRequest.productId;
+			this.accountId = modifyRequest.accountId;
 			this.businessCompanyName = modifyRequest.businessCompanyName;
 			this.businessFirstName = modifyRequest.businessFirstName;
 			this.businessLastName = modifyRequest.businessLastName;
@@ -483,19 +529,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			this.businessStateId = modifyRequest.businessStateId;
 			this.businessPostalCode = modifyRequest.businessPostalCode;
 			this.businessPhone1 = modifyRequest.businessPhone1;
-			this.comments = modifyRequest.comments;
+			this.details = modifyRequest.details;
 			this.timezoneId = modifyRequest.timezoneId;
-			this.accountName = modifyRequest.accountName;
+			this.name = modifyRequest.name;
 			this.isActive = modifyRequest.isActive;
 			this.includeDepositBounds = modifyRequest.includeDepositBounds;
 			this.minDepositAmount = modifyRequest.minDepositAmount;
 			this.maxDepositAmount = modifyRequest.maxDepositAmount;
 			this.amount = modifyRequest.amount;
-			this.accopTypeId = modifyRequest.accopTypeId;
-			this.sourceGuid = modifyRequest.sourceGuid;
+			this.operationType = modifyRequest.operationType;
 			this.sessionId = modifyRequest.sessionId;
 			this.geoCountryCode = modifyRequest.geoCountryCode;
 			this.clientIp = modifyRequest.clientIp;
+			this.servicePackageId = modifyRequest.servicePackageId;
+			this.expiryAt = modifyRequest.expiryAt;
+			this.maxUsers = modifyRequest.maxUsers;
 		}
 
 		public Builder withUidPrefix(String uidPrefix) {
@@ -530,6 +578,11 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		
 		public Builder withProductId(Long productId) {
 			this.productId = productId;
+			return this;
+		}
+		
+		public Builder withAccountId(Long accountId) {
+			this.accountId = accountId;
 			return this;
 		}
 
@@ -583,8 +636,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			return this;
 		}
 		
-		public Builder withComments(String comments) {
-			this.comments = comments;
+		public Builder withDetails(String details) {
+			this.details = details;
 			return this;
 		}
 		
@@ -593,8 +646,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			return this;
 		}
 		
-		public Builder withAccountName(String accountName) {
-			this.accountName = accountName;
+		public Builder withName(String name) {
+			this.name = name;
 			return this;
 		}
 		
@@ -623,13 +676,8 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 			return this;
 		}
 		
-		public Builder withAccopTypeId(Integer accopTypeId) {
-			this.accopTypeId = accopTypeId;
-			return this;
-		}
-		
-		public Builder withSourceGuid(String sourceGuid) {
-			this.sourceGuid = sourceGuid;
+		public Builder withOperationType(AccountOperationType operationType) {
+			this.operationType = operationType;
 			return this;
 		}
 		
@@ -645,6 +693,21 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 		
 		public Builder withClientIp(String clientIp) {
 			this.clientIp = clientIp;
+			return this;
+		}
+		
+		public Builder withServicePackageId(Integer servicePackageId) {
+			this.servicePackageId = servicePackageId;
+			return this;
+		}
+		
+		public Builder withExpiryAt(LocalDateTime expiryAt) {
+			this.expiryAt = expiryAt;
+			return this;
+		}
+		
+		public Builder withMaxUsers(Integer maxUsers) {
+			this.maxUsers = maxUsers;
 			return this;
 		}
 
@@ -663,11 +726,13 @@ public class ModifyRequest implements AccountIdentifiable, AccountDetailsChangeS
 				.add("businessAddress1", businessAddress1).add("businessAddress2", businessAddress2)
 				.add("businessCity", businessCity).add("businessCountryId", businessCountryId)
 				.add("businessStateId", businessStateId).add("businessPostalCode", businessPostalCode)
-				.add("businessPhone1", businessPhone1).add("comments", comments)
-				.add("timezoneId", timezoneId).add("accountName", accountName)
+				.add("businessPhone1", businessPhone1).add("details", details)
+				.add("timezoneId", timezoneId).add("name", name)
 				.add("isActive", isActive).add("includeDepositBounds", includeDepositBounds)
 				.add("minDepositAmount", minDepositAmount).add("maxDepositAmount", maxDepositAmount)
-				.add("amount", amount).add("accopTypeId", accopTypeId).add("sourceGuid", sourceGuid)
-				.add("sessionId", sessionId).add("geoCountryCode", geoCountryCode).add("clientIp", clientIp).toString();
+				.add("amount", amount).add("operationType", operationType)
+				.add("sessionId", sessionId).add("geoCountryCode", geoCountryCode).add("clientIp", clientIp)
+				.add("servicePackageId", servicePackageId).add("expiryAt", expiryAt).add("maxUsers", maxUsers)
+				.toString();
 	}	
 }

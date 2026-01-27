@@ -20,8 +20,8 @@ public class Account {
 		public static final String SERVICE_PACKAGE_ID = "service_package_id";
 		public static final String SERVICE_PACKAGE_NAME = "service_package_name";
 		public static final String PRODUCT_ID = "product_id";
-		public static final String NAME = "account_name";
-		public static final String COMMENTS = "comments";
+		public static final String NAME = "name";
+		public static final String DETAILS = "details";
 		public static final String OWNER_ID = "owner_id";
 		public static final String TIMEZONE = "timezone";
 		public static final String CREATED_AT = "created_at";
@@ -47,7 +47,7 @@ public class Account {
 	private String servicePackageName;
 	private Integer productId;
 	private String name;
-	private String comments;
+	private String details;
 	private Long ownerId;
 	private String timezone;
 	private LocalDateTime createdAt;
@@ -71,7 +71,7 @@ public class Account {
 		this.servicePackageName = builder.servicePackageName;
 		this.productId = builder.productId;
 		this.name = builder.name;
-		this.comments = builder.comments;
+		this.details = builder.details;
 		this.ownerId = builder.ownerId;
 		this.timezone = builder.timezone;
 		this.createdAt = builder.createdAt;
@@ -92,7 +92,7 @@ public class Account {
 		uidToken = json.getString(Keys.UID);
 		id = json.getLong(Keys.ID);
 		name = json.getString(Keys.NAME);
-		comments = json.getString(Keys.COMMENTS);
+		details = json.getString(Keys.DETAILS);
 		ownerId = json.getLong(Keys.OWNER_ID);
 		timezone = json.getString(Keys.TIMEZONE);
 		createdAt = Optional.ofNullable(json.getString(Keys.CREATED_AT)).map(Formatters::parseDateTime).orElse(null);
@@ -140,8 +140,8 @@ public class Account {
 		return name;
 	}
 	
-	public String getComments() {
-		return comments;
+	public String getDetails() {
+		return details;
 	}
 	
 	public Long getOwnerId() {
@@ -215,8 +215,8 @@ public class Account {
 			json.put(Keys.NAME, name);
 		}
 		
-		if (null != comments) {
-			json.put(Keys.COMMENTS, comments);
+		if (null != details) {
+			json.put(Keys.DETAILS, details);
 		}
 		
 		if(null != ownerId) {
@@ -306,7 +306,7 @@ public class Account {
 		private String servicePackageName;
 		private Integer productId;
 		private String name;
-		private String comments;
+		private String details;
 		private Long ownerId;
 		private String timezone;
 		private LocalDateTime createdAt;
@@ -333,7 +333,7 @@ public class Account {
 			this.servicePackageName = account.servicePackageName;
 			this.productId = account.productId;
 			this.name = account.name;
-			this.comments = account.comments;
+			this.details = account.details;
 			this.ownerId = account.ownerId;
 			this.timezone = account.timezone;
 			this.createdAt = account.createdAt;
@@ -385,8 +385,8 @@ public class Account {
 			return this;
 		}
 
-		public Builder withComments(String comments) {
-			this.comments = comments;
+		public Builder withDetails(String details) {
+			this.details = details;
 			return this;
 		}
 
@@ -470,7 +470,7 @@ public class Account {
 		return MoreObjects.toStringHelper(this).add("uidToken", uidToken).add("id", id)
 				.add("servicePackageId", servicePackageId).add("servicePackageExpiredOn", servicePackageExpiredOn)
 				.add("servicePackageName", servicePackageName).add("productId", productId).add("name", name)
-				.add("comments", comments).add("ownerId", ownerId).add("timezone", timezone)
+				.add("details", details).add("ownerId", ownerId).add("timezone", timezone)
 				.add("createdAt", createdAt).add("updatedAt", updatedAt).add("active", active).add("balance", balance)
 				.add("supplyDaysInterval", supplyDaysInterval).add("nextSupplySessionsCredit", nextSupplySessionsCredit)
 				.add("lastSessionsCreditedAt", lastSessionsCreditedAt).add("timezoneOffset", timezoneOffset)

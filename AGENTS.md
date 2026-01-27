@@ -15,6 +15,35 @@ Follow this playbook to keep contributions consistent across Opinion Account mod
 | Commits & PRs | Keep commit subjects imperative and ≤72 characters (e.g., `Add OpinionAccountConfig model`), squash noisy history, and ensure pull requests link issues, list verification commands, and attach evidence for behavior changes. |
 | Security | Store secrets outside the repo, validate configuration with `vertx-config` JSON locally, and schedule dependency refreshes using `./mvnw versions:use-latest-releases`. |
 
+Additional conventions for agents are listed below. Architecture and dataflow live in `SPEC.md`.
+
+## OpenAPI Contract Conventions
+
+- Operation IDs must match router names.
+- `accountUid` path parameter is mandatory for account-specific routes.
+- Colon paths are not allowed with OpenApiRouter; avoid `:` in OpenAPI paths.
+- Success codes: `201` for create with response body, `204` for mutations without body, `200` for reads.
+- Error response uses `#/components/schemas/Error`.
+
+## DTO/JSON Conventions
+
+- JSON keys use snake_case.
+- DTOs expose `toJson()` and build from `JsonObject`.
+- `ModifyRequest` fields are operation-specific; reuse is intentional.
+- Enumerations serialize as numeric values.
+
+## DAO Conventions
+
+- Named parameters use `p_` prefix (e.g., `p_account_id`).
+- Stored procedures are invoked via `CALL ...`.
+- `RowMapper` and `TupleMapper` live in `DaoMappers`.
+
+## Service Conventions
+
+- Validate input with `ErrorTickets.checkAnyNotNull`.
+- Log entry for each public method.
+- Use `getInternal(identity, includeDeleted)` for account existence checks.
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">

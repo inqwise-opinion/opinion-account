@@ -3,10 +3,10 @@ package com.inqwise.opinion.account;
 public interface AccountBalanceChangeSet {
 	Long getId();
 	Long getBackofficeUserId();
-	String getComments();
+	String getDetails();
 	Integer getAmount();
-	Integer getAccopTypeId();
-	String getSourceGuid();
+	AccountOperationType getOperationType();
+	Long getSourceId();
 	String getSessionId();
 	String getGeoCountryCode();
 	String getClientIp();

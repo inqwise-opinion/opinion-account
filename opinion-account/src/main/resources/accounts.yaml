@@ -70,7 +70,7 @@ paths:
             content:
                application/json:
                   schema:
-                     $ref: "#/components/schemas/ModifyAccountDetailsRequest"
+                     $ref: "#/components/schemas/ModifyAccountRequest"
          responses:
             '204':
                description: Account updated
@@ -171,7 +171,8 @@ paths:
                      schema:
                         $ref: "#/components/schemas/Error"
 
-   /{accountUid}/users:attach:
+   
+   /{accountUid}/users:
       parameters:
          - name: accountUid
            in: path
@@ -199,16 +200,7 @@ paths:
                   application/json:
                      schema:
                         $ref: "#/components/schemas/Error"
-
-   /{accountUid}/users:detach:
-      parameters:
-         - name: accountUid
-           in: path
-           required: true
-           description: The uid of the account to retrieve
-           schema:
-             type: string
-      post:
+      delete:
          summary: Detach account user
          operationId: detachAccountUser
          tags:
@@ -222,6 +214,62 @@ paths:
          responses:
             '204':
                description: Account user detached
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+   
+   /{accountUid}/service-package:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
+      post:
+         summary: Change account service package
+         operationId: changeAccountServicePackage
+         tags:
+            - accounts
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/ChangeServicePackageRequest"
+         responses:
+            '204':
+               description: Account service package changed
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
+
+   /{accountUid}/business-details:
+      parameters:
+         - name: accountUid
+           in: path
+           required: true
+           description: The uid of the account to retrieve
+           schema:
+             type: string
+      get:
+         summary: Get account business details
+         operationId: getAccountBusinessDetails
+         tags:
+            - accounts
+         responses:
+            '200':
+               description: Account business details
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/AccountBusinessDetails"
             default:
                description: unexpected error
                content:
@@ -318,6 +366,21 @@ paths:
                application/json:
                   schema:
                      type: object
+   /_probe:ping:
+      post:
+         summary: Probe ping
+         operationId: probePing
+         tags:
+            - accounts
+         responses:
+            '204':
+               description: Probe accepted
+            default:
+               description: unexpected error
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/Error"
       
 components:
    schemas:
@@ -404,7 +467,7 @@ components:
             expiry_at:
                description: date-time
                type: string
-               format: date-time
+               pattern: '^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(0?[1-9]|[12][0-9]|3[01]),\s\d{4}\s([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$'
             
       Account:
          required:
@@ -412,17 +475,57 @@ components:
          properties:
             uid:
                type: string
+            id:
+               type: number
+            service_package_id:
+               type: number
+            service_package_name:
+               type: string
+            product_id:
+               type: number
             name:
                type: string
-
-      ModifyAccountDetailsRequest:
-         description: ModifyAccountDetailsRequest
-         properties:
-            comments:
+            details:
                type: string
+            owner_id:
+               type: number
+            timezone:
+               type: string
+            created_at:
+               type: string
+               format: date-time
+            updated_at:
+               type: string
+               format: date-time
+            active:
+               type: boolean
+            status_id:
+               type: number
+            balance:
+               type: number
+            supply_days_interval:
+               type: number
+            next_supply_sessions_credit:
+               type: number
+            last_sessions_credited_at:
+               type: string
+            timezone_offset:
+               type: number
+            max_users:
+               type: number
+            min_deposit_amount:
+               type: number
+            max_deposit_amount:
+               type: number
+            details:
+               type: string
+
+      ModifyAccountRequest:
+         description: ModifyAccountRequest
+         properties:
             timezone_id:
                type: number
-            account_name:
+            name:
                type: string
             is_active:
                type: boolean
@@ -434,24 +537,47 @@ components:
                type: number
             max_deposit_amount:
                type: number
+            details:
+               type: string
+            business_company_name:
+               type: string
+            business_first_name:
+               type: string
+            business_last_name:
+               type: string
+            business_address1:
+               type: string
+            business_address2:
+               type: string
+            business_city:
+               type: string
+            business_country_id:
+               type: number
+            business_state_id:
+               type: number
+            business_postal_code:
+               type: string
+            business_phone1:
+               type: string
 
       ChangeBalanceRequest:
          description: ChangeBalanceRequest
          required:
             - bo_user_id
             - amount
-            - accop_type_id
+            - operation_type_id
+            - source_id
          properties:
             bo_user_id:
                type: number
-            comments:
+            details:
                type: string
             amount:
                type: number
-            accop_type_id:
+            operation_type_id:
                type: number
-            source_guid:
-               type: string
+            source_id:
+               type: number
             session_id:
                type: string
             geo_country_code:
@@ -486,6 +612,46 @@ components:
                type: number
             bo_user_id:
                type: number
+
+      ChangeServicePackageRequest:
+         description: ChangeServicePackageRequest
+         required:
+            - service_package_id
+            - expiry_at
+            - max_users
+         properties:
+            service_package_id:
+               type: number
+            expiry_at:
+               description: date-time
+               type: string
+               pattern: '^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(0?[1-9]|[12][0-9]|3[01]),\s\d{4}\s([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$'
+            max_users:
+               type: number
+
+      AccountBusinessDetails:
+         description: AccountBusinessDetails
+         properties:
+            business_company_name:
+               type: string
+            business_first_name:
+               type: string
+            business_last_name:
+               type: string
+            business_address1:
+               type: string
+            business_address2:
+               type: string
+            business_city:
+               type: string
+            business_country_id:
+               type: number
+            business_state_id:
+               type: number
+            business_postal_code:
+               type: string
+            business_phone1:
+               type: string
         
       Accounts:
          type: array
