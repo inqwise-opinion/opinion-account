@@ -49,6 +49,11 @@ Additional conventions for agents are listed below. Architecture and dataflow li
 - Keep Javadoc up to date for public classes and methods; add brief summaries for non-obvious helpers.
 - Update Javadoc when signatures or behavior changes.
 
+## Prepare for Commit
+
+- Run `./mvnw javadoc:javadoc -B` to validate doclint.
+- Run scoped tests for touched modules (e.g., `./mvnw -pl opinion-account test`).
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">

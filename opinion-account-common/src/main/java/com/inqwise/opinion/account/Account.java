@@ -68,6 +68,8 @@ public class Account {
 
 	/**
 	 * Constructs Account.
+	 *
+	 * @param builder source builder
 	 */
 	private Account(Builder builder) {
 		this.uidToken = builder.uidToken;
@@ -96,6 +98,8 @@ public class Account {
 
 	/**
 	 * Constructs Account.
+	 *
+	 * @param json source json
 	 */
 	public Account(JsonObject json) {
 		uidToken = json.getString(Keys.UID);
@@ -123,6 +127,8 @@ public class Account {
 	
 	/**
 	 * getMaxDepositAmount.
+	 *
+	 * @return max deposit amount
 	 */
 	public Integer getMaxDepositAmount() {
 		return maxDepositAmount;
@@ -130,6 +136,8 @@ public class Account {
 	
 	/**
 	 * getMinDepositAmount.
+	 *
+	 * @return min deposit amount
 	 */
 	public Integer getMinDepositAmount() {
 		return minDepositAmount;
@@ -137,6 +145,8 @@ public class Account {
 	
 	/**
 	 * getMaxUsers.
+	 *
+	 * @return max users
 	 */
 	public Integer getMaxUsers() {
 		return maxUsers;
@@ -144,6 +154,8 @@ public class Account {
 	
 	/**
 	 * getTimezoneOffset.
+	 *
+	 * @return timezone offset
 	 */
 	public Integer getTimezoneOffset() {
 		return timezoneOffset;
@@ -151,6 +163,8 @@ public class Account {
 	
 	/**
 	 * getUidToken.
+	 *
+	 * @return uid token
 	 */
 	public String getUidToken() {
 		return uidToken;
@@ -158,6 +172,8 @@ public class Account {
 	
 	/**
 	 * getId.
+	 *
+	 * @return account id
 	 */
 	public Long getId() {
 		return id;
@@ -165,6 +181,8 @@ public class Account {
 	
 	/**
 	 * getName.
+	 *
+	 * @return account name
 	 */
 	public String getName() {
 		return name;
@@ -172,6 +190,8 @@ public class Account {
 	
 	/**
 	 * getDetails.
+	 *
+	 * @return account details
 	 */
 	public String getDetails() {
 		return details;
@@ -179,6 +199,8 @@ public class Account {
 	
 	/**
 	 * getOwnerId.
+	 *
+	 * @return owner id
 	 */
 	public Long getOwnerId() {
 		return ownerId;
@@ -186,6 +208,8 @@ public class Account {
 	
 	/**
 	 * getTimezone.
+	 *
+	 * @return timezone
 	 */
 	public String getTimezone() {
 		return timezone;
@@ -193,6 +217,8 @@ public class Account {
 	
 	/**
 	 * getCreatedAt.
+	 *
+	 * @return created timestamp
 	 */
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
@@ -200,6 +226,8 @@ public class Account {
 	
 	/**
 	 * getUpdatedAt.
+	 *
+	 * @return updated timestamp
 	 */
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
@@ -207,6 +235,8 @@ public class Account {
 	
 	/**
 	 * getActive.
+	 *
+	 * @return active flag
 	 */
 	public Boolean getActive() {
 		return active;
@@ -214,6 +244,8 @@ public class Account {
 	
 	/**
 	 * getServicePackageId.
+	 *
+	 * @return service package id
 	 */
 	public Integer getServicePackageId() {
 		return servicePackageId;
@@ -221,6 +253,8 @@ public class Account {
 	
 	/**
 	 * getBalance.
+	 *
+	 * @return balance
 	 */
 	public Long getBalance() {
 		return balance;
@@ -228,6 +262,8 @@ public class Account {
 	
 	/**
 	 * getSupplyDaysInterval.
+	 *
+	 * @return supply days interval
 	 */
 	public Integer getSupplyDaysInterval() {
 		return supplyDaysInterval;
@@ -235,6 +271,8 @@ public class Account {
 	
 	/**
 	 * getNextSupplySessionsCredit.
+	 *
+	 * @return next supply sessions credit
 	 */
 	public Integer getNextSupplySessionsCredit() {
 		return nextSupplySessionsCredit;
@@ -242,6 +280,8 @@ public class Account {
 	
 	/**
 	 * getLastSessionsCreditedAt.
+	 *
+	 * @return last sessions credited date
 	 */
 	public LocalDate getLastSessionsCreditedAt() {
 		return lastSessionsCreditedAt;
@@ -249,6 +289,8 @@ public class Account {
 	
 	/**
 	 * getProductId.
+	 *
+	 * @return product id
 	 */
 	public Integer getProductId() {
 		return productId;
@@ -256,6 +298,8 @@ public class Account {
 	
 	/**
 	 * getServicePackageExpiredOn.
+	 *
+	 * @return service package expiry date
 	 */
 	public LocalDate getServicePackageExpiredOn() {
 		return servicePackageExpiredOn;
@@ -263,6 +307,8 @@ public class Account {
 	
 	/**
 	 * getServicePackageName.
+	 *
+	 * @return service package name
 	 */
 	public String getServicePackageName() {
 		return servicePackageName;
@@ -270,6 +316,8 @@ public class Account {
 	
 	/**
 	 * getStatus.
+	 *
+	 * @return entity status
 	 */
 	public OpinionEntityStatus getStatus() {
 		return status;
@@ -277,6 +325,8 @@ public class Account {
 	
 	/**
 	 * toJson.
+	 *
+	 * @return json representation
 	 */
 	public JsonObject toJson() {
 		var json = new JsonObject();
@@ -370,6 +420,8 @@ public class Account {
 
 	/**
 	 * builder.
+	 *
+	 * @return new builder
 	 */
 	public static Builder builder() {
 		return new Builder();
@@ -377,6 +429,9 @@ public class Account {
 
 	/**
 	 * builderFrom.
+	 *
+	 * @param account source account
+	 * @return builder
 	 */
 	public static Builder builderFrom(Account account) {
 		return new Builder(account);
@@ -442,6 +497,9 @@ public class Account {
 
 		/**
 		 * withUidToken.
+		 *
+		 * @param uidToken uid token
+		 * @return builder
 		 */
 		public Builder withUidToken(String uidToken) {
 			this.uidToken = uidToken;
@@ -450,6 +508,9 @@ public class Account {
 
 		/**
 		 * withId.
+		 *
+		 * @param id account id
+		 * @return builder
 		 */
 		public Builder withId(Long id) {
 			this.id = id;
@@ -458,6 +519,9 @@ public class Account {
 
 		/**
 		 * withServicePackageId.
+		 *
+		 * @param servicePackageId service package id
+		 * @return builder
 		 */
 		public Builder withServicePackageId(Integer servicePackageId) {
 			this.servicePackageId = servicePackageId;
@@ -466,6 +530,9 @@ public class Account {
 
 		/**
 		 * withServicePackageExpiredOn.
+		 *
+		 * @param servicePackageExpiredOn service package expiry date
+		 * @return builder
 		 */
 		public Builder withServicePackageExpiredOn(LocalDate servicePackageExpiredOn) {
 			this.servicePackageExpiredOn = servicePackageExpiredOn;
@@ -474,6 +541,9 @@ public class Account {
 
 		/**
 		 * withServicePackageName.
+		 *
+		 * @param servicePackageName service package name
+		 * @return builder
 		 */
 		public Builder withServicePackageName(String servicePackageName) {
 			this.servicePackageName = servicePackageName;
@@ -482,6 +552,9 @@ public class Account {
 
 		/**
 		 * withProductId.
+		 *
+		 * @param productId product id
+		 * @return builder
 		 */
 		public Builder withProductId(Integer productId) {
 			this.productId = productId;
@@ -490,6 +563,9 @@ public class Account {
 
 		/**
 		 * withName.
+		 *
+		 * @param name account name
+		 * @return builder
 		 */
 		public Builder withName(String name) {
 			this.name = name;
@@ -498,6 +574,9 @@ public class Account {
 
 		/**
 		 * withDetails.
+		 *
+		 * @param details account details
+		 * @return builder
 		 */
 		public Builder withDetails(String details) {
 			this.details = details;
@@ -506,6 +585,9 @@ public class Account {
 
 		/**
 		 * withOwnerId.
+		 *
+		 * @param ownerId owner id
+		 * @return builder
 		 */
 		public Builder withOwnerId(Long ownerId) {
 			this.ownerId = ownerId;
@@ -514,6 +596,9 @@ public class Account {
 
 		/**
 		 * withTimezone.
+		 *
+		 * @param timezone timezone id
+		 * @return builder
 		 */
 		public Builder withTimezone(String timezone) {
 			this.timezone = timezone;
@@ -522,6 +607,9 @@ public class Account {
 
 		/**
 		 * withCreatedAt.
+		 *
+		 * @param createdAt created timestamp
+		 * @return builder
 		 */
 		public Builder withCreatedAt(LocalDateTime createdAt) {
 			this.createdAt = createdAt;
@@ -530,6 +618,9 @@ public class Account {
 
 		/**
 		 * withUpdatedAt.
+		 *
+		 * @param updatedAt updated timestamp
+		 * @return builder
 		 */
 		public Builder withUpdatedAt(LocalDateTime updatedAt) {
 			this.updatedAt = updatedAt;
@@ -538,6 +629,9 @@ public class Account {
 
 		/**
 		 * withActive.
+		 *
+		 * @param active active flag
+		 * @return builder
 		 */
 		public Builder withActive(Boolean active) {
 			this.active = active;
@@ -546,6 +640,9 @@ public class Account {
 
 		/**
 		 * withBalance.
+		 *
+		 * @param balance account balance
+		 * @return builder
 		 */
 		public Builder withBalance(Long balance) {
 			this.balance = balance;
@@ -554,6 +651,9 @@ public class Account {
 
 		/**
 		 * withSupplyDaysInterval.
+		 *
+		 * @param supplyDaysInterval supply days interval
+		 * @return builder
 		 */
 		public Builder withSupplyDaysInterval(Integer supplyDaysInterval) {
 			this.supplyDaysInterval = supplyDaysInterval;
@@ -562,6 +662,9 @@ public class Account {
 
 		/**
 		 * withNextSupplySessionsCredit.
+		 *
+		 * @param nextSupplySessionsCredit next supply sessions credit
+		 * @return builder
 		 */
 		public Builder withNextSupplySessionsCredit(Integer nextSupplySessionsCredit) {
 			this.nextSupplySessionsCredit = nextSupplySessionsCredit;
@@ -570,6 +673,9 @@ public class Account {
 
 		/**
 		 * withLastSessionsCreditedAt.
+		 *
+		 * @param lastSessionsCreditedAt last sessions credited date
+		 * @return builder
 		 */
 		public Builder withLastSessionsCreditedAt(LocalDate lastSessionsCreditedAt) {
 			this.lastSessionsCreditedAt = lastSessionsCreditedAt;
@@ -578,6 +684,9 @@ public class Account {
 
 		/**
 		 * withTimezoneOffset.
+		 *
+		 * @param timezoneOffset timezone offset
+		 * @return builder
 		 */
 		public Builder withTimezoneOffset(Integer timezoneOffset) {
 			this.timezoneOffset = timezoneOffset;
@@ -586,6 +695,9 @@ public class Account {
 
 		/**
 		 * withMaxUsers.
+		 *
+		 * @param maxUsers max users
+		 * @return builder
 		 */
 		public Builder withMaxUsers(Integer maxUsers) {
 			this.maxUsers = maxUsers;
@@ -594,6 +706,9 @@ public class Account {
 
 		/**
 		 * withMinDepositAmount.
+		 *
+		 * @param minDepositAmount min deposit amount
+		 * @return builder
 		 */
 		public Builder withMinDepositAmount(Integer minDepositAmount) {
 			this.minDepositAmount = minDepositAmount;
@@ -602,6 +717,9 @@ public class Account {
 
 		/**
 		 * withMaxDepositAmount.
+		 *
+		 * @param maxDepositAmount max deposit amount
+		 * @return builder
 		 */
 		public Builder withMaxDepositAmount(Integer maxDepositAmount) {
 			this.maxDepositAmount = maxDepositAmount;
@@ -610,6 +728,9 @@ public class Account {
 
 		/**
 		 * withStatus.
+		 *
+		 * @param status entity status
+		 * @return builder
 		 */
 		public Builder withStatus(OpinionEntityStatus status) {
 			this.status = status;
@@ -618,6 +739,8 @@ public class Account {
 
 		/**
 		 * build.
+		 *
+		 * @return account instance
 		 */
 		public Account build() {
 			return new Account(this);
@@ -626,6 +749,8 @@ public class Account {
 
 	/**
 	 * toString.
+	 *
+	 * @return string representation
 	 */
 	@Override
 	public String toString() {

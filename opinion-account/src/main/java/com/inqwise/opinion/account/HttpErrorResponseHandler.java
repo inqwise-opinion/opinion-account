@@ -22,6 +22,9 @@ public class HttpErrorResponseHandler implements Handler<RoutingContext> {
 
 	/**
 	 * Constructs HttpErrorResponseHandler.
+	 *
+	 * @param printStackTrace whether to include stack traces
+	 * @param sanitizeUnexpectedErrors whether to sanitize unexpected errors
 	 */
 	public HttpErrorResponseHandler(boolean printStackTrace, boolean sanitizeUnexpectedErrors) {
 		this.printStackTrace = printStackTrace;
@@ -82,6 +85,9 @@ public class HttpErrorResponseHandler implements Handler<RoutingContext> {
 	
 	/**
 	 * stackTraceToJson.
+	 *
+	 * @param frames stack trace frames
+	 * @return stack trace as json array
 	 */
 	public static JsonArray stackTraceToJson(StackTraceElement[] frames) {
 		JsonArray arr = new JsonArray();

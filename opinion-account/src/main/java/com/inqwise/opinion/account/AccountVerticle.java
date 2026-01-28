@@ -26,6 +26,12 @@ public class AccountVerticle extends VerticleBase {
 	 */
 	private static final Logger logger = LogManager.getLogger(AccountVerticle.class);
 
+	/**
+	 * Constructs AccountVerticle.
+	 */
+	public AccountVerticle() {
+	}
+
 	@Inject
 	private RestApiServerOptions config;
 	

@@ -21,6 +21,8 @@ public class ExceptionLoggerHandler implements Handler<RoutingContext> {
 	
 	/**
 	 * Constructs ExceptionLoggerHandler.
+	 *
+	 * @param warnErrorTickets whether to warn for managed error tickets
 	 */
 	public ExceptionLoggerHandler(boolean warnErrorTickets) {
 		this.warnErrorTickets = warnErrorTickets;

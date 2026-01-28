@@ -61,6 +61,8 @@ public final class AccountOpenApiRouterBuilder {
 
 	/**
 	 * createRouter.
+	 *
+	 * @return router future
 	 */
 	public Future<Router> createRouter() {
 		return getContract()
