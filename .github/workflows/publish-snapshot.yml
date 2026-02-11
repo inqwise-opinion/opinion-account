@@ -51,7 +51,16 @@ jobs:
           if [[ -n "$BEFORE_SHA" && "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]]; then
             if git cat-file -e "${BEFORE_SHA}:pom.xml" 2>/dev/null; then
               git show "${BEFORE_SHA}:pom.xml" > /tmp/previous-pom.xml
-              PREV_VERSION=$(./mvnw -f /tmp/previous-pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout || true)
+              PREV_VERSION=$(awk '
+                /<parent>/ { in_parent=1; next }
+                /<\/parent>/ { in_parent=0; next }
+                !in_parent && /<version>/ {
+                  if (match($0, /<version>[[:space:]]*([^<]+)[[:space:]]*<\/version>/, m)) {
+                    print m[1]
+                    exit
+                  }
+                }
+              ' /tmp/previous-pom.xml)
             fi
           fi
 
