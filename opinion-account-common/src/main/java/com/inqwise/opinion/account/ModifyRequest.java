@@ -1,5 +1,6 @@
 package com.inqwise.opinion.account;
 
+import com.inqwise.opinion.common.Formatters;
 import com.google.common.base.MoreObjects;
 
 import io.vertx.codegen.annotations.DataObject;
