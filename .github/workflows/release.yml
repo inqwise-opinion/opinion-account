@@ -51,6 +51,7 @@ jobs:
         run: |
           NEXT_VERSION=$(echo ${{ github.event.inputs.version }} | awk -F. '{$NF = $NF + 1; print}' OFS=.)
           mvn release:clean release:prepare release:perform \
+            -P release \
             -DreleaseVersion=${{ github.event.inputs.version }} \
             -DdevelopmentVersion=${NEXT_VERSION}-SNAPSHOT \
             -Dtag=v${{ github.event.inputs.version }} \
@@ -68,12 +69,8 @@ jobs:
             VERSION_INPUT="${{ github.ref_name }}"
             VERSION_INPUT="${VERSION_INPUT#v}"
           fi
-          if [[ "$VERSION_INPUT" == *-SNAPSHOT ]]; then
-            echo "::error ::Refusing to deploy snapshot version $VERSION_INPUT via release workflow."
-            exit 1
-          fi
           git checkout -f "v${VERSION_INPUT}"
-          mvn clean deploy -P sonatype-oss-release -DskipTests -DreleaseVersion="$VERSION_INPUT"
+          mvn clean deploy -P release,sonatype-oss-release -DskipTests -DreleaseVersion="$VERSION_INPUT"
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
@@ -100,7 +97,7 @@ jobs:
             echo "Maven repository directory not found: $MAVEN_REPO"
             echo "Falling back to building artifacts with correct version"
             git checkout "v$VERSION"
-            mvn clean package -P sonatype-oss-release -DskipTests
+            mvn clean package -P release,sonatype-oss-release -DskipTests
             cp target/opinion-common-*.jar release-assets/
           fi
 
