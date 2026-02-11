@@ -12,6 +12,9 @@ import com.google.inject.Inject;
 import com.inqwise.errors.ErrorCodes;
 import com.inqwise.errors.ErrorTicket;
 import com.inqwise.errors.ErrorTickets;
+import com.inqwise.opinion.common.ExceptionLoggerHandler;
+import com.inqwise.opinion.common.ExceptionNormalizerHandler;
+import com.inqwise.opinion.common.HttpErrorResponseHandler;
 import com.inqwise.opinion.common.RestApiServerOptions;
 import com.inqwise.opinion.common.Uid;
 
